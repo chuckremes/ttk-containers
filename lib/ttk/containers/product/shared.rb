@@ -59,8 +59,7 @@ module TTK
 
         def self.required_methods
           base_methods +
-            ComposedMethods.public_instance_methods +
-            Expiration::Interface.required_methods
+            ComposedMethods.public_instance_methods
         end
       end
 

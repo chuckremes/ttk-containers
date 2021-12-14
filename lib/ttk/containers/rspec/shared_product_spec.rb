@@ -1,38 +1,51 @@
+require_relative 'shared_expiration_spec'
 
-RSpec.shared_examples "product interface" do |product_class, parent_module|
-  subject(:product) do
-    expiration = parent_module::Expiration::Example.new(year: year, month: month, day: day)
-    product_class.new(symbol:        symbol,
-                        strike:        strike,
-                        callput:       callput,
-                        security_type: security_type,
-                      expiration_date: expiration
-    )
-  end
-
-  let(:symbol) { 'SPY' }
-  let(:strike) { 50 }
-  let(:callput) { :call }
-  let(:security_type) { :equity_option }
-  let(:year) { 2021 }
-  let(:month) { 12 }
-  let(:day) { 11 }
+RSpec.shared_examples "product interface - required methods" do |parent_module|
 
   it 'conforms to the required interface' do
-    TTK::Containers::Product::Interface.required_methods.each do |rm|
+    parent_module::Interface.required_methods.each do |rm|
       expect(product).to respond_to(rm)
     end
   end
 
-  context 'call option' do
-    subject { product.call? }
-    let(:callput) { :call }
+end
 
-    describe '#call?' do
-      it 'returns true' do
-        expect(subject).to be true
-      end
+RSpec.shared_examples 'product interface - call' do
+  describe '#call?' do
+    it 'returns true' do
+      expect(product.call?).to be true
     end
+  end
 
+  describe '#put?' do
+    it 'returns false' do
+      expect(product.put?).to be false
+    end
+  end
+
+  describe '#equity_option?' do
+    it 'returns true' do
+      expect(product.equity_option?).to be true
+    end
+  end
+
+  describe '#equity?' do
+    it 'returns false' do
+      expect(product.equity?).to be false
+    end
+  end
+
+  describe '#strike' do
+    it 'returns the strike' do
+      expect(product.strike).to eq strike
+    end
+  end
+
+  describe '#expiration_date' do
+    let(:expiration) { product.expiration_date }
+
+    include_examples 'expiration interface - year'
+    include_examples 'expiration interface - month'
+    include_examples 'expiration interface - day'
   end
 end
