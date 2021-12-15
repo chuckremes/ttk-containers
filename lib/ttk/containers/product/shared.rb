@@ -15,11 +15,11 @@ module TTK
 
       module ComposedMethods
         def call?
-          :call == callput
+          equity_option? && :call == callput
         end
 
         def put?
-          :put == callput
+          equity_option? && :put == callput
         end
 
         def equity?

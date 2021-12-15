@@ -33,15 +33,15 @@ RSpec.describe TTK::Containers::Product::Example do
     include_examples 'product interface - call'
   end
 
-  # describe 'put option' do
-  #   let(:callput) { :put }
-  #
-  #   include_examples 'product interface - put', product
-  # end
-  #
-  # describe 'equity' do
-  #   let(:security_type) { :equity }
-  #
-  #   include_examples 'product interface - equity', product
-  # end
+  describe 'put option' do
+    let(:callput) { :put }
+
+    include_examples 'product interface - put'
+  end
+
+  describe 'equity' do
+    let(:security_type) { :equity }
+
+    include_examples 'product interface - equity'
+  end
 end

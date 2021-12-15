@@ -14,6 +14,18 @@ module TTK
         keyword_init: true) do
 
         include ComposedMethods
+
+        alias_method :orig_strike, :strike
+        def strike
+          return orig_strike if equity_option?
+          0
+        end
+
+        alias_method :orig_expiration_date, :expiration_date
+        def expiration_date
+          return orig_expiration_date if equity_option?
+          Expiration::Example.new(year: 0, month: 0, day: 0)
+        end
       end
 
     end
