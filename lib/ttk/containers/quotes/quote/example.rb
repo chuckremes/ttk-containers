@@ -13,11 +13,12 @@ module TTK
         # to do unit and integration tests since the interface (and behaviors)
         # should be identical to the vendors.
         #
-        Quote = Struct.new(
-          *Quotes::Quote::Interface.required_methods,
+        Example = Struct.new(
+          *Interface.base_methods,
           keyword_init: true
         ) do
-          include Quotes::Quote::ComposedMethods
+
+          include ComposedMethods
         end
 
       end
