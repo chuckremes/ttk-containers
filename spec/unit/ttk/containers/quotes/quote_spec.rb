@@ -20,8 +20,6 @@ RSpec.describe TTK::Containers::Quotes::Quote::Example do
   let(:iv) { 0 }
 
   subject(:quote) do
-    #:quote_timestamp, :quote_status, :ask, :bid, :last, :volume, :dte, :open_interest,
-    #              :intrinsic, :extrinsic, :multiplier, :delta, :theta, :gamma, :vega, :rho, :iv
     described_class.new(    quote_timestamp: quote_ts,
                             quote_status: quote_status,
                             ask: ask,
