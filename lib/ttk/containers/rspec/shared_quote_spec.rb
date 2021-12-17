@@ -76,8 +76,8 @@ RSpec.shared_examples "quote interface - equity update" do
     context "when quote_timestamp changes" do
       it "returns the new value after update" do
         expect(container.quote_timestamp).to eq quote_timestamp
-        update_object[:quote_timestamp] = quote_timestamp + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:quote_timestamp, quote_timestamp + 1)
+        container.update_quote(obj)
         expect(container.quote_timestamp).to eq quote_timestamp + 1
       end
     end
@@ -85,8 +85,8 @@ RSpec.shared_examples "quote interface - equity update" do
     context "when quote_status changes" do
       it "returns the new value after update" do
         expect(container.quote_status).to eq quote_status
-        update_object[:quote_status] = :other
-        container.update_quote(update_object)
+        obj = update_object.set(:quote_status, :other)
+        container.update_quote(obj)
         expect(container.quote_status).to eq :other
       end
     end
@@ -94,8 +94,8 @@ RSpec.shared_examples "quote interface - equity update" do
     context "when bid changes" do
       it "returns the new value after update" do
         expect(container.bid).to eq bid
-        update_object[:bid] = bid + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:bid, bid + 1)
+        container.update_quote(obj)
         expect(container.bid).to eq bid + 1
       end
     end
@@ -103,8 +103,8 @@ RSpec.shared_examples "quote interface - equity update" do
     context "when ask changes" do
       it "returns the new value after update" do
         expect(container.ask).to eq ask
-        update_object[:ask] = ask + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:ask, ask + 1)
+        container.update_quote(obj)
         expect(container.ask).to eq ask + 1
       end
     end
@@ -112,8 +112,8 @@ RSpec.shared_examples "quote interface - equity update" do
     context "when last changes" do
       it "returns the new value after update" do
         expect(container.last).to eq last
-        update_object[:last] = last + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:last, last + 1)
+        container.update_quote(obj)
         expect(container.last).to eq last + 1
       end
     end
@@ -121,8 +121,8 @@ RSpec.shared_examples "quote interface - equity update" do
     context "when volume changes" do
       it "returns the new value after update" do
         expect(container.volume).to eq volume
-        update_object[:volume] = volume + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:volume, volume + 1)
+        container.update_quote(obj)
         expect(container.volume).to eq volume + 1
       end
     end
@@ -258,8 +258,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when quote_timestamp changes" do
       it "returns the new value after update" do
         expect(container.quote_timestamp).to eq quote_timestamp
-        update_object[:quote_timestamp] = quote_timestamp + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:quote_timestamp, quote_timestamp + 1)
+        container.update_quote(obj)
         expect(container.quote_timestamp).to eq quote_timestamp + 1
       end
     end
@@ -267,8 +267,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when quote_status changes" do
       it "returns the new value after update" do
         expect(container.quote_status).to eq quote_status
-        update_object[:quote_status] = :other
-        container.update_quote(update_object)
+        obj = update_object.set(:quote_status, :other)
+        container.update_quote(obj)
         expect(container.quote_status).to eq :other
       end
     end
@@ -276,8 +276,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when bid changes" do
       it "returns the new value after update" do
         expect(container.bid).to eq bid
-        update_object[:bid] = bid + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:bid, bid + 1)
+        container.update_quote(obj)
         expect(container.bid).to eq bid + 1
       end
     end
@@ -285,8 +285,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when ask changes" do
       it "returns the new value after update" do
         expect(container.ask).to eq ask
-        update_object[:ask] = ask + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:ask, ask + 1)
+        container.update_quote(obj)
         expect(container.ask).to eq ask + 1
       end
     end
@@ -294,8 +294,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when last changes" do
       it "returns the new value after update" do
         expect(container.last).to eq last
-        update_object[:last] = last + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:last, last + 1)
+        container.update_quote(obj)
         expect(container.last).to eq last + 1
       end
     end
@@ -303,8 +303,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when volume changes" do
       it "returns the new value after update" do
         expect(container.volume).to eq volume
-        update_object[:volume] = volume + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:volume, volume + 1)
+        container.update_quote(obj)
         expect(container.volume).to eq volume + 1
       end
     end
@@ -312,8 +312,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when multiplier changes" do
       it "does not return the new value after update" do
         expect(container.multiplier).to eq multiplier
-        update_object[:multiplier] = multiplier + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:multiplier, multiplier + 1)
+        container.update_quote(obj)
         expect(container.multiplier).to eq multiplier
       end
     end
@@ -321,8 +321,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when open_interest changes" do
       it "returns the new value after update" do
         expect(container.open_interest).to eq open_interest
-        update_object[:open_interest] = open_interest + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:open_interest, open_interest + 1)
+        container.update_quote(obj)
         expect(container.open_interest).to eq open_interest + 1
       end
     end
@@ -330,8 +330,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when dte changes" do
       it "returns the new value after update" do
         expect(container.dte).to eq dte
-        update_object[:dte] = dte + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:dte, dte + 1)
+        container.update_quote(obj)
         expect(container.dte).to eq dte + 1
       end
     end
@@ -339,8 +339,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when intrinsic changes" do
       it "returns the new value after update" do
         expect(container.intrinsic).to eq intrinsic
-        update_object[:intrinsic] = intrinsic + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:intrinsic, intrinsic + 1)
+        container.update_quote(obj)
         expect(container.intrinsic).to eq intrinsic + 1
       end
     end
@@ -348,8 +348,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when extrinsic changes" do
       it "returns the new value after update" do
         expect(container.extrinsic).to eq extrinsic
-        update_object[:extrinsic] = extrinsic + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:extrinsic, extrinsic + 1)
+        container.update_quote(obj)
         expect(container.extrinsic).to eq extrinsic + 1
       end
     end
@@ -357,8 +357,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when delta changes" do
       it "returns the new value after update" do
         expect(container.delta).to eq delta
-        update_object[:delta] = delta + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:delta, delta + 1)
+        container.update_quote(obj)
         expect(container.delta).to eq delta + 1
       end
     end
@@ -366,8 +366,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when gamma changes" do
       it "returns the new value after update" do
         expect(container.gamma).to eq gamma
-        update_object[:gamma] = gamma + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:gamma, gamma + 1)
+        container.update_quote(obj)
         expect(container.gamma).to eq gamma + 1
       end
     end
@@ -375,8 +375,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when theta changes" do
       it "returns the new value after update" do
         expect(container.theta).to eq theta
-        update_object[:theta] = theta + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:theta, theta + 1)
+        container.update_quote(obj)
         expect(container.theta).to eq theta + 1
       end
     end
@@ -384,8 +384,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when vega changes" do
       it "returns the new value after update" do
         expect(container.vega).to eq vega
-        update_object[:vega] = vega + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:vega, vega + 1)
+        container.update_quote(obj)
         expect(container.vega).to eq vega + 1
       end
     end
@@ -393,8 +393,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when rho changes" do
       it "returns the new value after update" do
         expect(container.rho).to eq rho
-        update_object[:rho] = rho + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:rho, rho + 1)
+        container.update_quote(obj)
         expect(container.rho).to eq rho + 1
       end
     end
@@ -402,8 +402,8 @@ RSpec.shared_examples "quote interface - equity_option update" do
     context "when iv changes" do
       it "returns the new value after update" do
         expect(container.iv).to eq iv
-        update_object[:iv] = iv + 1
-        container.update_quote(update_object)
+        obj = update_object.set(:iv, iv + 1)
+        container.update_quote(obj)
         expect(container.iv).to eq iv + 1
       end
     end

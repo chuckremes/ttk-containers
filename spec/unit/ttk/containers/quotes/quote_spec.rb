@@ -1,5 +1,13 @@
 require "ttk/containers/rspec/shared_quote_spec"
 
+module SpecialForTesting
+  def set(key, value)
+    h = {}
+    h[key] = value
+    h
+  end
+end
+
 RSpec.describe TTK::Containers::Quotes::Quote::Equity::Example do
   let(:quote_timestamp) { Time.now }
   let(:quote_status) { :realtime }
@@ -29,15 +37,10 @@ RSpec.describe TTK::Containers::Quotes::Quote::Equity::Example do
 
   describe "#update_quote" do
     let(:security_type) { :equity }
-    let(:update_object) do
-      {
-        quote_timestamp: quote_timestamp,
-        quote_status: quote_status,
-        ask: ask,
-        bid: bid,
-        last: last,
-        volume: volume
-      }
+    let(:update_object) { {} }
+
+    before do
+      update_object.extend(SpecialForTesting)
     end
 
     include_examples "quote interface - equity update"
@@ -100,25 +103,10 @@ RSpec.describe TTK::Containers::Quotes::Quote::EquityOption::Example do
 
   describe "#update_quote" do
     let(:security_type) { :equity }
-    let(:update_object) do
-      {
-        quote_timestamp: quote_timestamp,
-        quote_status: quote_status,
-        ask: ask,
-        bid: bid,
-        last: last,
-        volume: volume,
-        dte: dte,
-        open_interest: open_interest,
-        intrinsic: intrinsic,
-        extrinsic: extrinsic,
-        delta: delta,
-        theta: theta,
-        gamma: gamma,
-        vega: vega,
-        rho: rho,
-        iv: iv
-      }
+    let(:update_object) { {} }
+
+    before do
+      update_object.extend(SpecialForTesting)
     end
 
     include_examples "quote interface - equity_option update"

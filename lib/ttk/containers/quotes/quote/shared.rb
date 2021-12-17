@@ -9,11 +9,17 @@ module TTK
           # provide them here rather than reinventing them for every concrete class.
           module ComposedMethods
             def midpoint
-              ((ask.to_f + bid.to_f) / 2.0).round(half: :down)
+              if bid > 0 || ask > 0
+                ((bid.to_f + ask.to_f) / 2.0).round(2, half: :down)
+              else
+                # handles case where it's a non-trading index, e.g. VIX
+                last
+              end
             end
 
+
             def nice_print_header
-              separator = " | "
+              separator = "|"
               [separator, "QuoteTS".rjust(21).ljust(22) + separator +
                 "Bid".rjust(6).ljust(7) + separator +
                 "Ask".rjust(6).ljust(7) + separator +
