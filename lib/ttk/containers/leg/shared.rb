@@ -51,12 +51,12 @@ module TTK
 
         def osi
           if equity_option?
-            symbol.ljust(6, '-') +
-              (expiration_date.year % 2000).to_s.rjust(2, '0') +
-              expiration_date.month.to_s.rjust(2, '0') +
-              expiration_date.day.to_s.rjust(2, '0') +
-              (call? ? 'C' : 'P') +
-              strike.to_i.to_s.rjust(5, '0') + ((strike - strike.to_i) * 1000).to_i.to_s.rjust(3, '0')
+            symbol.ljust(6, "-") +
+              (expiration_date.year % 2000).to_s.rjust(2, "0") +
+              expiration_date.month.to_s.rjust(2, "0") +
+              expiration_date.day.to_s.rjust(2, "0") +
+              (call? ? "C" : "P") +
+              strike.to_i.to_s.rjust(5, "0") + ((strike - strike.to_i) * 1000).to_i.to_s.rjust(3, "0")
           else
             symbol
           end
@@ -64,17 +64,17 @@ module TTK
 
         def to_product
           h = {
-            'symbol'       => symbol,
-            'securityType' => security_type
+            "symbol"       => symbol,
+            "securityType" => security_type
           }
 
           if equity_option?
             h.merge(
-              'callPut'     => callput,
-              'expiryYear'  => expiration_date.year.to_s,
-              'expiryMonth' => expiration_date.month.to_s.rjust(2, '0'),
-              'expiryDay'   => expiration_date.day.to_s.rjust(2, '0'),
-              'strikePrice' => strike.to_s
+              "callPut"     => callput,
+              "expiryYear"  => expiration_date.year.to_s,
+              "expiryMonth" => expiration_date.month.to_s.rjust(2, "0"),
+              "expiryDay"   => expiration_date.day.to_s.rjust(2, "0"),
+              "strikePrice" => strike.to_s
             )
           else
             h

@@ -1,4 +1,4 @@
-require_relative 'expiration/shared'
+require_relative "expiration/shared"
 
 module TTK
   module Containers
@@ -7,7 +7,7 @@ module TTK
     # include Futures and Futures Options.
     #
     # The ComposedMethods module must be defined first. These are methods composed
-    # of other required primitive methods that every subclass must implement. It's
+    # of other required primitive methods that every subclass must implement. It"s
     # first because the Interface module maintains a list of all of the #required_methods
     # and so the order of definitions is important.
     #
@@ -32,15 +32,19 @@ module TTK
 
         def osi
           if equity_option?
-            symbol.ljust(6, '-') +
-              (expiration_date.year % 2000).to_s.rjust(2, '0') +
-              expiration_date.month.to_s.rjust(2, '0') +
-              expiration_date.day.to_s.rjust(2, '0') +
-              (call? ? 'C' : 'P') +
-              strike.to_i.to_s.rjust(5, '0') + ((strike - strike.to_i) * 1000).to_i.to_s.rjust(3, '0')
+            symbol.ljust(6, "-") +
+              (expiration_date.year % 2000).to_s.rjust(2, "0") +
+              expiration_date.month.to_s.rjust(2, "0") +
+              expiration_date.day.to_s.rjust(2, "0") +
+              (call? ? "C" : "P") +
+              strike.to_i.to_s.rjust(5, "0") + ((strike - strike.to_i) * 1000).to_i.to_s.rjust(3, "0")
           else
             symbol
           end
+        end
+
+        def ==(other)
+          osi == other.osi
         end
       end
 

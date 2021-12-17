@@ -25,7 +25,7 @@ module TTK
               ComposedMethods.public_instance_methods.reject {|m| disallowed_methods.include?(m) }
           end
 
-          # We can't include Comparable methods in our required list
+          # We can"t include Comparable methods in our required list
           def self.disallowed_methods
               [:<=>, :clamp, :<=, :>=, :==, :<, :>, :between?]
           end

@@ -13,11 +13,11 @@ module TTK
             end
 
             def nice_print_header
-              separator = ' | '
+              separator = " | "
               [separator, "QuoteTS".rjust(21).ljust(22) + separator +
-                     "Bid".rjust(6).ljust(7) + separator +
-                     "Ask".rjust(6).ljust(7) + separator +
-                     "Last".rjust(6).ljust(7) + separator]
+                "Bid".rjust(6).ljust(7) + separator +
+                "Ask".rjust(6).ljust(7) + separator +
+                "Last".rjust(6).ljust(7) + separator]
             end
 
             def nice_print
@@ -35,7 +35,7 @@ module TTK
           # classes will Just Work. Duck typing!
           module Interface
             def self.base_methods
-              [:quote_timestamp, :quote_status, :ask, :bid, :last, :volume]
+              [:quote_timestamp, :quote_status, :ask, :bid, :last, :volume, :product, :update_quote]
             end
 
             def self.required_methods
@@ -49,10 +49,6 @@ module TTK
         module Equity
           module ComposedMethods
             include Shared::ComposedMethods
-
-            def nice_print_header
-              super
-            end
 
             def nice_print
               separator, header_string = nice_print_header
@@ -92,21 +88,32 @@ module TTK
             include Shared::ComposedMethods
 
             def nice_print_header
-              super
+              separator, string = super
+              [separator,
+               string + separator +
+                 "delta".rjust(6).ljust(7) + separator +
+                 "gamma".rjust(6).ljust(7) + separator +
+                 "theta".rjust(6).ljust(7) + separator +
+                 "iv".rjust(6).ljust(7)
+              ]
             end
 
             def nice_print
               separator, header_string = nice_print_header
               now, bid, ask, last = super
               puts header_string
-              puts [now, bid, ask, last].join(separator)
+              delta = self.delta.rjust(6).ljust(7)
+              gamma = self.gamma.rjust(6).ljust(7)
+              theta = self.theta.rjust(6).ljust(7)
+              iv = self.iv.rjust(6).ljust(7)
+              puts [now, bid, ask, last, delta, gamma, theta, iv].join(separator)
             end
           end
 
           module Interface
             def self.base_methods
               Shared::Interface.base_methods + [:dte, :open_interest, :intrinsic, :extrinsic,
-               :multiplier, :delta, :theta, :gamma, :vega, :rho, :iv]
+                                                :multiplier, :delta, :theta, :gamma, :vega, :rho, :iv]
             end
 
             def self.required_methods
