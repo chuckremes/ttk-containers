@@ -28,4 +28,13 @@ RSpec.describe TTK::Containers::Product::Expiration::Example do
   describe "#day" do
     include_examples "expiration interface - day"
   end
+
+  describe '#date' do
+    include_examples 'expiration interface - date'
+
+  end
+
+  describe '#iso8601' do
+    include_examples 'expiration interface - iso8601'
+  end
 end

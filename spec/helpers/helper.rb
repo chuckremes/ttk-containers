@@ -8,14 +8,28 @@ module Helper
     klass.new(symbol: symbol, strike: strike, callput: callput, security_type: security_type, expiration_date: expiration_date)
   end
 
-  def make_equity_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:, ask:, bid:,
-                        last:, volume:, product:)
-    klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: ask, bid: bid, last: last, volume: volume, product: product)
+  def make_equity_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:,
+                        last:, spread: 0.03, volume:, product:)
+    klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: last + spread, bid: last - spread,
+              last: last, volume: volume, product: product)
   end
 
-  def make_equity_option_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:, ask:, bid:, last:, volume:,
-                               product:)
-    klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: ask, bid: bid, last: last, volume: volume, product: product)
+  def make_equity_option_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:,
+                               strike: 150.0, last:, spread: 0.03, volume:, product:)
+
+    greeks = FakeGreeks.from(price: last, strike: 155.5, callput: product.callput,
+                             dte: (product.expiration_date.date - Date.today).to_i)
+
+    klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: last + spread, bid: last - spread,
+              last: last, volume: volume, product: product,
+              multiplier: 100,
+              open_interest: 100,
+              delta: greeks.delta,
+              gamma: greeks.gamma,
+              theta: greeks.theta,
+              vega: greeks.vega,
+              rho: greeks.rho,
+              iv: greeks.iv)
   end
 
   # Always make it around 45 DTE from today and a Friday
@@ -43,9 +57,136 @@ module Helper
                       product: make_default_equity_product)
   end
 
-  def make_default_equity_option_quote
-    make_equity_option_quote(quote_timestamp: Time.now, quote_status: :realtime, ask: 3.44, bid: 3.39, last: 3.4, volume: 1234,
-                             product: make_default_equity_option_product)
+  def make_default_equity_option_quote(callput: :call, last: 154.18)
+    product = make_default_equity_option_product
+    product.callput = callput
 
+    make_equity_option_quote(quote_timestamp: Time.now, quote_status: :realtime, last: last, volume: 1234,
+                             product: product)
   end
+
+
+
+  # option price = dte * delta
+  # closer to strike means closer to 50 delta; every 1% above/below changes
+  # delta by same (difference / price) * 100 * (1/dte)
+  # theta is extrinsic / dte
+  # extrinsic is (option price - strike) * delta
+  # intrinsic is option price - extrinsic
+  # vega is (dte * FIXED_VEGA), it gets smaller as dte goes to 0
+  # gamma is (1 - vega) so it gets bigger as dte goes to 0
+  class FakeGreeks
+    FIXED_VEGA = 0.02
+
+    def self.from(price:, strike:, callput:, dte:)
+      callput == :call ? Call.new(price: price, strike: strike, dte: dte) : Put.new(price: price, strike: strike, dte: dte)
+    end
+
+    def self.equity
+      from(price: 0, strike: 0, callput: :call, dte: 0)
+    end
+
+    class Base
+      attr_reader :price, :dte, :strike
+
+      def initialize(price:, strike:, dte:)
+        @price  = price.to_f
+        @dte    = dte.to_f
+        @strike = strike.to_f
+        @change = difference / price.to_f
+      end
+
+      def option_price
+        dte * delta.abs
+      end
+
+      def delta
+        value = (difference.abs / price) * 100 * (1 / dte)
+        if value.nan?
+          0
+        else
+          value
+        end
+      end
+
+      def theta
+        -(extrinsic / dte)
+      end
+
+      def intrinsic
+        option_price - extrinsic
+      end
+
+      def vega
+        FIXED_VEGA * dte
+      end
+
+      def gamma
+        1 - vega
+      end
+
+      def rho
+        0.001
+      end
+
+      def iv
+        value = @change + 0.1
+        value = value.nan? ? 0.1 : value
+        [value, 3.5].min
+      end
+
+      def itm?
+        difference.negative?
+      end
+    end
+
+    class Call < Base
+      def difference
+        # always assume OTM so difference is positive
+        # when negative then ITM
+        strike - price
+      end
+
+      def extrinsic
+        if itm?
+          1 - (1 / dte)
+        else
+          (strike - option_price) * delta.abs
+        end
+      end
+
+      def delta
+        # handle overflows
+        if itm?
+          [0.5 + super, 1.0].min
+        else
+          [0.5 - super, 0.0].max
+        end
+      end
+    end
+
+    class Put < Base
+      def difference
+        price - strike
+      end
+
+      def extrinsic
+        if itm?
+          1 - (1 / dte)
+        else
+          (option_price - strike) * delta.abs
+        end
+      end
+
+      def delta
+        # handle overflows
+        if itm?
+          [-0.5 - super, -1.0].max
+        else
+          [-0.5 + super, 0.0].min
+        end
+      end
+    end
+  end
+
 end

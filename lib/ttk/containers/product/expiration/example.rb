@@ -3,8 +3,8 @@ module TTK
     module Product
       module Expiration
 
-        Example = Struct.new(
-          *Interface.required_methods, keyword_init: true) do
+        Example = Struct.new(*Interface.base_methods,
+                             keyword_init: true) do
 
           include ComposedMethods
         end

@@ -46,6 +46,34 @@ RSpec.shared_examples "expiration interface - day" do
   end
 end
 
+RSpec.shared_examples 'expiration interface - date' do
+  describe '#date' do
+    it 'returns a Date object' do
+      expect(expiration.date).to be_kind_of(Date)
+    end
+
+    it 'returns the correct value' do
+      expect(expiration.date).to eq Date.new(year, month, day)
+    end
+  end
+end
+
+RSpec.shared_examples 'expiration interface - iso8601' do
+  describe '#iso8601' do
+    it 'returns the date in correct format' do
+      expect(expiration.iso8601).to eq '20211211'
+    end
+  end
+end
+
+RSpec.shared_examples "expiration interface - methods" do
+  include_examples 'expiration interface - year'
+  include_examples 'expiration interface - month'
+  include_examples 'expiration interface - day'
+  include_examples 'expiration interface - date'
+  include_examples 'expiration interface - iso8601'
+end
+
 # Special case for when the Product is an Equity or other type that has no expiration
 #
 RSpec.shared_examples "expiration interface - year 0" do

@@ -182,9 +182,7 @@ RSpec.shared_examples "product interface - call" do
   describe "#expiration_date" do
     let(:expiration) { container.expiration_date }
 
-    include_examples "expiration interface - year"
-    include_examples "expiration interface - month"
-    include_examples "expiration interface - day"
+    include_examples "expiration interface - methods"
   end
 
   describe "#osi" do
@@ -236,9 +234,7 @@ RSpec.shared_examples "product interface - put" do
   describe "#expiration_date" do
     let(:expiration) { container.expiration_date }
 
-    include_examples "expiration interface - year"
-    include_examples "expiration interface - month"
-    include_examples "expiration interface - day"
+    include_examples "expiration interface - methods"
   end
 
   describe "#osi" do

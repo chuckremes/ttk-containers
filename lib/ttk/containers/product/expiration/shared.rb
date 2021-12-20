@@ -20,8 +20,12 @@ module TTK
         end
 
         module Interface
+          def self.base_methods
+            [:year, :month, :day]
+          end
+
           def self.required_methods
-            [:year, :month, :day] +
+            base_methods +
               ComposedMethods.public_instance_methods.reject {|m| disallowed_methods.include?(m) }
           end
 
