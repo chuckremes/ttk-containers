@@ -18,9 +18,12 @@ module TTK
       Example = Struct.new(*Interface.base_methods,
                        keyword_init: true
       ) do
-        include ComposedMethods
+
+        # Order of inclusion is important. The #delta method in ComposedMethods needs to
+        # load last so any call to #super will trigger that method on Quote::Forward
         include Quote::Forward
         include Product::Forward
+        include ComposedMethods
       end
 
 

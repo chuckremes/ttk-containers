@@ -23,8 +23,6 @@ module TTK
             Product::Interface.required_methods +
             Quote::Interface.required_methods
 
-          # remove the duplicates, e.g. #delta from ComposedMethods, and #delta from Quote
-          # and filter out Comparable methods
           m.uniq.reject { |m| disallowed_methods.include?(m) }
         end
 

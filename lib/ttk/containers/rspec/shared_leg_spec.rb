@@ -165,6 +165,254 @@ RSpec.shared_examples 'leg interface - long order' do
   end
 end
 
+RSpec.shared_examples 'leg interface - long call greeks' do
+  describe '#delta' do
+    it 'returns a positive number' do
+      expect(container.delta).to be_positive
+    end
+
+    it 'returns the quote delta' do
+      expect(container.delta).to eq quote.delta
+    end
+  end
+
+  describe '#gamma' do
+    it 'returns a positive number' do
+      expect(container.gamma).to be_positive
+    end
+
+    it 'returns the quote gamma' do
+      expect(container.gamma).to eq quote.gamma
+    end
+  end
+
+  describe '#theta' do
+    it 'returns a negative number' do
+      expect(container.theta).to be_negative
+    end
+
+    it 'returns the quote theta' do
+      expect(container.theta).to eq quote.theta
+    end
+  end
+
+  describe '#vega' do
+    it 'returns a positive number' do
+      expect(container.vega).to be_positive
+    end
+
+    it 'returns the quote vega' do
+      expect(container.vega).to eq quote.vega
+    end
+  end
+
+  describe '#rho' do
+    it 'returns a positive number' do
+      expect(container.rho).to be_positive
+    end
+
+    it 'returns the quote rho' do
+      expect(container.rho).to eq quote.rho
+    end
+  end
+
+  describe '#iv' do
+    it 'returns a positive number' do
+      expect(container.iv).to be_positive
+    end
+
+    it 'returns the quote iv' do
+      expect(container.iv).to eq quote.iv
+    end
+  end
+end
+
+RSpec.shared_examples 'leg interface - long put greeks' do
+  describe '#delta' do
+    it 'returns a negative number' do
+      expect(container.delta).to be_negative
+    end
+
+    it 'returns the quote delta' do
+      expect(container.delta).to eq quote.delta
+    end
+  end
+
+  describe '#gamma' do
+    it 'returns a positive number' do
+      expect(container.gamma).to be_positive
+    end
+
+    it 'returns the quote gamma' do
+      expect(container.gamma).to eq quote.gamma
+    end
+  end
+
+  describe '#theta' do
+    it 'returns a negative number' do
+      expect(container.theta).to be_negative
+    end
+
+    it 'returns the quote theta' do
+      expect(container.theta).to eq quote.theta
+    end
+  end
+
+  describe '#vega' do
+    it 'returns a positive number' do
+      expect(container.vega).to be_positive
+    end
+
+    it 'returns the quote vega' do
+      expect(container.vega).to eq quote.vega
+    end
+  end
+
+  describe '#rho' do
+    it 'returns a positive number' do
+      expect(container.rho).to be_positive
+    end
+
+    it 'returns the quote rho' do
+      expect(container.rho).to eq quote.rho
+    end
+  end
+
+  describe '#iv' do
+    it 'returns a positive number' do
+      expect(container.iv).to be_positive
+    end
+
+    it 'returns the quote iv' do
+      expect(container.iv).to eq quote.iv
+    end
+  end
+end
+
+RSpec.shared_examples 'leg interface - short call greeks' do
+  describe '#delta' do
+    it 'returns a negative number' do
+      expect(container.delta).to be_negative
+    end
+
+    it 'returns the same absolute value of quote delta' do
+      expect(container.delta.abs).to eq quote.delta
+    end
+  end
+
+  describe '#gamma' do
+    it 'returns a negative number' do
+      expect(container.gamma).to be_negative
+    end
+
+    it 'returns the same absolute value of quote gamma' do
+      expect(container.gamma.abs).to eq quote.gamma
+    end
+  end
+
+  describe '#theta' do
+    it 'returns a positive number' do
+      expect(container.theta).to be_positive
+    end
+
+    it 'returns the same absolute value of quote theta' do
+      expect(container.theta).to eq quote.theta.abs
+    end
+  end
+
+  describe '#vega' do
+    it 'returns a negative number' do
+      expect(container.vega).to be_negative
+    end
+
+    it 'returns the same absolute value of quote vega' do
+      expect(container.vega.abs).to eq quote.vega
+    end
+  end
+
+  describe '#rho' do
+    it 'returns a negative number' do
+      expect(container.rho).to be_negative
+    end
+
+    it 'returns the same absolute value of quote rho' do
+      expect(container.rho.abs).to eq quote.rho
+    end
+  end
+
+  describe '#iv' do
+    it 'returns a positive number' do
+      expect(container.iv).to be_positive
+    end
+
+    it 'returns the quote iv' do
+      expect(container.iv).to eq quote.iv
+    end
+  end
+end
+
+RSpec.shared_examples 'leg interface - short put greeks' do
+  describe '#delta' do
+    it 'returns a positive number' do
+      expect(container.delta).to be_positive
+    end
+
+    it 'returns the same absolute value of quote delta' do
+      expect(container.delta).to eq quote.delta.abs
+    end
+  end
+
+  describe '#gamma' do
+    it 'returns a negative number' do
+      expect(container.gamma).to be_negative
+    end
+
+    it 'returns the same absolute value of quote gamma' do
+      expect(container.gamma.abs).to eq quote.gamma
+    end
+  end
+
+  describe '#theta' do
+    it 'returns a positive number' do
+      expect(container.theta).to be_positive
+    end
+
+    it 'returns the same absolute value of quote theta' do
+      expect(container.theta).to eq quote.theta.abs
+    end
+  end
+
+  describe '#vega' do
+    it 'returns a negative number' do
+      expect(container.vega).to be_negative
+    end
+
+    it 'returns the same absolute value of quote vega' do
+      expect(container.vega.abs).to eq quote.vega
+    end
+  end
+
+  describe '#rho' do
+    it 'returns a negative number' do
+      expect(container.rho).to be_negative
+    end
+
+    it 'returns the same absolute value of quote rho' do
+      expect(container.rho.abs).to eq quote.rho
+    end
+  end
+
+  describe '#iv' do
+    it 'returns a positive number' do
+      expect(container.iv).to be_positive
+    end
+
+    it 'returns the quote iv' do
+      expect(container.iv).to eq quote.iv
+    end
+  end
+end
+
 RSpec.shared_examples 'leg interface - basic behavior' do
   describe '#unfilled_quantity' do
     it 'returns the correct value' do
