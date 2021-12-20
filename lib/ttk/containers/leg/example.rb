@@ -15,20 +15,12 @@ module TTK
       # The action can change based on the container. The container enforces the real
       # action onto the legs.
       #
-      Example = Struct.new(:a, #*Interface.required_methods,
+      Example = Struct.new(*Interface.base_methods,
                        keyword_init: true
       ) do
         include ComposedMethods
         include Quote::Forward
         include Product::Forward
-
-        def fees
-          0.25
-        end
-
-        def commission
-          0.5
-        end
       end
 
 

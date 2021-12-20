@@ -50,6 +50,9 @@ grow to 4 (Leg::Position::Equity, Leg::Position::EquityOption,
 Leg::Order::Equity, Leg::Order::EquityOption). Every additional Quote type
 would double this number.
 
+Besides, a Quote or a Leg or an Order or a Position determines its type from
+the Product. Encoding this logic in each class is redundant.
+
 At this time, I do not believe that is the best choice.
 
 So, Quote contains the same interface for equities and options. The methods

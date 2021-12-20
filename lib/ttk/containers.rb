@@ -1,5 +1,9 @@
 require 'forwardable'
 
+require "tzinfo"
+Eastern_TZ = TZInfo::Timezone.get("US/Eastern")
+Central_TZ = TZInfo::Timezone.get("US/Central")
+
 require_relative 'containers/product/expiration/shared'
 require_relative 'containers/product/expiration/example'
 require_relative 'containers/product/shared'

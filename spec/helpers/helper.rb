@@ -8,14 +8,14 @@ module Helper
     klass.new(symbol: symbol, strike: strike, callput: callput, security_type: security_type, expiration_date: expiration_date)
   end
 
-  def make_equity_quote(klass: TTK::Containers::Quotes::Quote::Equity::Example, quote_timestamp:, quote_status:, ask:, bid:,
+  def make_equity_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:, ask:, bid:,
                         last:, volume:, product:)
     klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: ask, bid: bid, last: last, volume: volume, product: product)
   end
 
-  def make_equity_option_quote(klass: TTK::Containers::Quotes::Quote::EquityOption::Example, quote_timestamp:, quote_status:, ask:, bid:, last:, volume:,
-                               blah:)
-    klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: ask, bid: bid, last: last, volume: volume)
+  def make_equity_option_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:, ask:, bid:, last:, volume:,
+                               product:)
+    klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: ask, bid: bid, last: last, volume: volume, product: product)
   end
 
   # Always make it around 45 DTE from today and a Friday
@@ -39,10 +39,13 @@ module Helper
   end
 
   def make_default_equity_quote
-    make_equity_quote(quote_timestamp: Time.now, quote_status: :realtime, ask: 3.44, bid: 3.39, last: 3.4, volume: 1234)
+    make_equity_quote(quote_timestamp: Time.now, quote_status: :realtime, ask: 3.44, bid: 3.39, last: 3.4, volume: 1234,
+                      product: make_default_equity_product)
   end
 
   def make_default_equity_option_quote
+    make_equity_option_quote(quote_timestamp: Time.now, quote_status: :realtime, ask: 3.44, bid: 3.39, last: 3.4, volume: 1234,
+                             product: make_default_equity_option_product)
 
   end
 end

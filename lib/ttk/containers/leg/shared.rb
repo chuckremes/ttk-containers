@@ -2,6 +2,8 @@ module TTK
   module Containers
     module Leg
 
+      EPOCH = Time.utc(1970, 1, 1, 0, 0, 0)
+
       # Any concrete implementation of a Leg class from a vendor must provide
       # these elemental methods. The Leg::ComposedMethods methods will use some
       # of these too.
@@ -11,7 +13,7 @@ module TTK
             :product, :quote,
             :side, :unfilled_quantity, :filled_quantity, :execution_price,
             :order_price, :placed_time, :execution_time, :preview_time,
-            :leg_status, :leg_id, :stop_price
+            :leg_status, :leg_id, :stop_price, :fees, :commission
           ]
         end
 
@@ -21,7 +23,14 @@ module TTK
             Product::Interface.required_methods +
             Quote::Interface.required_methods
 
-          m.uniq # remove the duplicates, e.g. #delta from ComposedMethods, and #delta from Quote
+          # remove the duplicates, e.g. #delta from ComposedMethods, and #delta from Quote
+          # and filter out Comparable methods
+          m.uniq.reject { |m| disallowed_methods.include?(m) }
+        end
+
+        # We can"t include Comparable methods in our required list
+        def self.disallowed_methods
+          [:<=>, :clamp, :<=, :>=, :==, :<, :>, :between?]
         end
       end
 
