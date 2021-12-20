@@ -8,7 +8,7 @@ module SpecialForTesting
   end
 end
 
-RSpec.describe TTK::Containers::Quotes::Quote::Example do
+RSpec.describe TTK::Containers::Quote::Example do
   let(:quote_timestamp) { Time.now }
   let(:quote_status) { :realtime }
   let(:ask) { 17.15 }
@@ -55,7 +55,7 @@ RSpec.describe TTK::Containers::Quotes::Quote::Example do
       expect(container).to be_instance_of(described_class)
     end
 
-    include_examples "quote interface - required methods", TTK::Containers::Quotes::Quote
+    include_examples "quote interface - required methods", TTK::Containers::Quote
   end
 
   context 'equity' do

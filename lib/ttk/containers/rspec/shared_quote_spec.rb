@@ -1,5 +1,5 @@
 $: << File.expand_path(File.join(__dir__, "..", "..", "..")) # useful when this file is directly required by other gems
-require "ttk/containers/quotes/quote/shared"
+require "ttk/containers/quote/shared"
 require_relative "shared_product_spec"
 
 RSpec.shared_examples "quote interface - required methods" do |parent_module|

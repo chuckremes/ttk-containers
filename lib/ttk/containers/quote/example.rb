@@ -1,6 +1,5 @@
 module TTK
   module Containers
-    module Quotes
       module Quote
 
         # A concrete implementation of a Quote class using the shared definitions
@@ -90,6 +89,5 @@ module TTK
         end
 
       end
-    end
   end
 end
