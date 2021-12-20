@@ -26,8 +26,16 @@ module Helper
     make_expiration(year: date.year, month: date.month, day: date.day)
   end
 
-  def make_default_product
+  def make_equity_expiration
+    make_expiration(year:0, month: 0, day: 0)
+  end
+
+  def make_default_equity_option_product
     make_product(symbol: "AAPL", strike: 155.5, callput: :put, security_type: :equity_option, expiration_date: make_default_expiration)
+  end
+
+  def make_default_equity_product
+    make_product(symbol: "AAPL", strike: 0.0, callput: :none, security_type: :equity, expiration_date: make_equity_expiration)
   end
 
   def make_default_equity_quote

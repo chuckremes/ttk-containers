@@ -3,145 +3,74 @@ module TTK
     module Quotes
       module Quote
 
-        module Shared
-          # Public methods that every class that defines the Interface should also expose.
-          # These methods are defined in terms of that Interface definition, so we
-          # provide them here rather than reinventing them for every concrete class.
-          module ComposedMethods
-            def midpoint
-              if bid > 0 || ask > 0
-                ((bid.to_f + ask.to_f) / 2.0).round(2, half: :down)
-              else
-                # handles case where it's a non-trading index, e.g. VIX
-                last
-              end
-            end
-
-
-            def nice_print_header
-              separator = "|"
-              [separator, "QuoteTS".rjust(21).ljust(22) + separator +
-                "Bid".rjust(6).ljust(7) + separator +
-                "Ask".rjust(6).ljust(7) + separator +
-                "Last".rjust(6).ljust(7) + separator]
-            end
-
-            def nice_print
-              now = self.quote_timestamp.strftime("%Y%m%d-%H:%M:%S.%L").rjust(21).ljust(22)
-              b = self.bid.to_s.rjust(6).ljust(7)
-              a = self.ask.to_s.rjust(6).ljust(7)
-              last = self.last.to_s.rjust(6).ljust(7)
-              [now, bid, ask, last]
+        module ComposedMethods
+          def midpoint
+            if bid > 0 || ask > 0
+              ((bid.to_f + ask.to_f) / 2.0).round(2, half: :down)
+            else
+              # handles case where it's a non-trading index, e.g. VIX
+              last
             end
           end
 
-          # Defines the required methods that any implementation of a quote should provide.
-          # This allows for consistency across TTK vendors. As long as the vendor implementation
-          # provides a Quote class that conforms to this interface then the consumers of these
-          # classes will Just Work. Duck typing!
-          module Interface
-            def self.base_methods
-              [:quote_timestamp, :quote_status, :ask, :bid, :last, :volume, :product, :update_quote]
-            end
+          def nice_print_header
+            separator = "|"
 
-            def self.required_methods
-              base_methods +
-                ComposedMethods.public_instance_methods
-            end
-          end
-
-        end
-
-        module Equity
-          module ComposedMethods
-            include Shared::ComposedMethods
-
-            def nice_print
-              separator, header_string = nice_print_header
-              now, bid, ask, last = super
-              puts header_string
-              puts [now, bid, ask, last].join(separator)
-            end
-
-          end
-
-          module Interface
-            def self.base_methods
-              Shared::Interface.base_methods
-            end
-
-            def self.required_methods
-              base_methods +
-                ComposedMethods.public_instance_methods
-            end
-
-          end
-
-          # Included by concrete classes that want to expose a Quote interface
-          # for outside consumption. References Interface.required_methods directly
-          # in forwarding so that the lists never fall out of sync.
-          #
-          # Example: would be included in a Leg class that contains a quote so that
-          # all the quote methods are auto-forwarded to Leg#quote.
-          module Forward
-            extend Forwardable
-            def_delegators :quote, *Interface.required_methods
-          end
-        end
-
-        module EquityOption
-          module ComposedMethods
-            include Shared::ComposedMethods
-
-            def nice_print_header
-              separator, string = super
-              [separator,
-               string + separator +
+            [
+              separator,
+              ["QuoteTS".rjust(21).ljust(22) + separator +
+                 "Bid".rjust(6).ljust(7) + separator +
+                 "Ask".rjust(6).ljust(7) + separator +
+                 "Last".rjust(6).ljust(7) + separator +
                  "delta".rjust(6).ljust(7) + separator +
                  "gamma".rjust(6).ljust(7) + separator +
                  "theta".rjust(6).ljust(7) + separator +
-                 "iv".rjust(6).ljust(7)
-              ]
-            end
-
-            def nice_print
-              separator, header_string = nice_print_header
-              now, bid, ask, last = super
-              puts header_string
-              delta = self.delta.rjust(6).ljust(7)
-              gamma = self.gamma.rjust(6).ljust(7)
-              theta = self.theta.rjust(6).ljust(7)
-              iv = self.iv.rjust(6).ljust(7)
-              puts [now, bid, ask, last, delta, gamma, theta, iv].join(separator)
-            end
+                 "iv".rjust(6).ljust(7)].join(separator)
+            ]
           end
 
-          module Interface
-            def self.base_methods
-              Shared::Interface.base_methods + [:dte, :open_interest, :intrinsic, :extrinsic,
-                                                :multiplier, :delta, :theta, :gamma, :vega, :rho, :iv]
-            end
+          def nice_print
+            separator, header_string = nice_print_header
+            puts header_string
 
-            def self.required_methods
-              base_methods +
-                ComposedMethods.public_instance_methods
-            end
-
-          end
-
-          # Included by concrete classes that want to expose a Quote interface
-          # for outside consumption. References Interface.required_methods directly
-          # in forwarding so that the lists never fall out of sync.
-          #
-          # Example: would be included in a Leg class that contains a quote so that
-          # all the quote methods are auto-forwarded to Leg#quote.
-          module Forward
-            extend Forwardable
-            def_delegators :quote, *Interface.required_methods
+            now = self.quote_timestamp.strftime("%Y%m%d-%H:%M:%S.%L").rjust(21).ljust(22)
+            bid = self.bid.to_s.rjust(6).ljust(7)
+            ask = self.ask.to_s.rjust(6).ljust(7)
+            last = self.last.to_s.rjust(6).ljust(7)
+            delta = self.delta.rjust(6).ljust(7)
+            gamma = self.gamma.rjust(6).ljust(7)
+            theta = self.theta.rjust(6).ljust(7)
+            iv = self.iv.rjust(6).ljust(7)
+            puts [now, bid, ask, last, delta, gamma, theta, iv].join(separator)
           end
         end
-      end
 
+        module Interface
+          def self.base_methods
+            [:quote_timestamp, :quote_status, :ask, :bid, :last, :volume, :product, :update_quote,
+             :dte, :open_interest, :intrinsic, :extrinsic,
+             :multiplier, :delta, :theta, :gamma, :vega, :rho, :iv]
+          end
+
+          def self.required_methods
+            base_methods +
+              ComposedMethods.public_instance_methods
+          end
+
+        end
+
+        # Included by concrete classes that want to expose a Quote interface
+        # for outside consumption. References Interface.required_methods directly
+        # in forwarding so that the lists never fall out of sync.
+        #
+        # Example: would be included in a Leg class that contains a quote so that
+        # all the quote methods are auto-forwarded to Leg#quote.
+        module Forward
+          extend Forwardable
+          def_delegators :quote, *Interface.required_methods
+        end
+
+      end
     end
   end
 end
