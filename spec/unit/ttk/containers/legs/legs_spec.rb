@@ -1,103 +1,564 @@
-require "ttk/containers/rspec/shared_legs_spec"
+# frozen_string_literal: true
 
-# RSpec.describe TTK::Containers::Legs::Example do
-#
-#   let(:quote) { make_default_equity_option_quote(callput: :put) }
-#   let(:product) { quote.product }
-#   let(:leg_id) { 123 }
-#   let(:leg_status) { :open }
-#   let(:fees) { 1.23 }
-#   let(:commission) { 2.34 }
-#   let(:side) { :long }
-#   let(:unfilled_quantity) { 0 }
-#   let(:filled_quantity) { 0 }
-#   let(:execution_price) { 5.21 }
-#   let(:order_price) { 0.0 }
-#   let(:stop_price) { 0.0 }
-#   let(:now) { Time.now }
-#   let(:placed_time) { TTK::Containers::Leg::EPOCH }
-#   let(:execution_time) { TTK::Containers::Leg::EPOCH }
-#   let(:preview_time) { TTK::Containers::Leg::EPOCH }
-#
-#   subject(:container) do
-#     described_class.new(quote: quote,
-#                         product: product,
-#                         leg_id: leg_id,
-#                         leg_status: leg_status,
-#                         fees: fees,
-#                         commission: commission,
-#                         side: side,
-#                         unfilled_quantity: unfilled_quantity,
-#                         filled_quantity: filled_quantity,
-#                         execution_price: execution_price,
-#                         order_price: order_price,
-#                         stop_price: stop_price,
-#                         placed_time: placed_time,
-#                         execution_time: execution_time,
-#                         preview_time: preview_time
-#     )
-#   end
-#
-#   describe "creation" do
-#     it "returns a Leg instance" do
-#       expect(container).to be_instance_of(described_class)
-#     end
-#
-#     include_examples "leg interface - required methods", TTK::Containers::Leg
-#   end
-#
-#   context 'position leg' do
-#     let(:execution_price) { 5.21 }
-#     let(:order_price) { 0.0 }
-#     let(:stop_price) { 0.0 }
-#     let(:now) { Time.now }
-#     let(:placed_time) { TTK::Containers::Leg::EPOCH }
-#     let(:execution_time) { Time.new(now.year, now.month, now.day, 0, 0, 0, Eastern_TZ) }
-#     let(:preview_time) { TTK::Containers::Leg::EPOCH }
-#
-#     context 'where it is short call then' do
-#       let(:quote) { make_default_equity_option_quote(callput: :call) }
-#       let(:side) { :short }
-#       let(:unfilled_quantity) { 0 }
-#       let(:filled_quantity) { -2 }
-#
-#       include_examples 'leg interface - short position'
-#       include_examples 'leg interface - short call greeks'
-#     end
-#
-#     context 'where it is short put then' do
-#       let(:quote) { make_default_equity_option_quote(callput: :put) }
-#       let(:side) { :short }
-#       let(:unfilled_quantity) { 0 }
-#       let(:filled_quantity) { -2 }
-#
-#       include_examples 'leg interface - short position'
-#       include_examples 'leg interface - short put greeks'
-#     end
-#
-#     context 'where it is long call then' do
-#       let(:quote) { make_default_equity_option_quote(callput: :call) }
-#       let(:side) { :long }
-#       let(:unfilled_quantity) { 0 }
-#       let(:filled_quantity) { 1 }
-#
-#       include_examples 'leg interface - long position'
-#       include_examples 'leg interface - long call greeks'
-#     end
-#
-#     context 'where it is long put then' do
-#       let(:quote) { make_default_equity_option_quote(callput: :put) }
-#       let(:side) { :long }
-#       let(:unfilled_quantity) { 0 }
-#       let(:filled_quantity) { 1 }
-#
-#       include_examples 'leg interface - long position'
-#       include_examples 'leg interface - long put greeks'
-#     end
-#
-#     include_examples 'leg interface - basic behavior'
-#   end
-#
-#   context 'order legs' do
-#   end
-# end
+require 'ttk/containers/rspec/shared_legs_spec'
+
+RSpec.describe TTK::Containers::Legs::Example do
+  subject(:container) do
+    described_class.from_legs(
+      legs: legs,
+      status: status
+    )
+  end
+
+  context 'where it is a 1-leg put position container' do
+    let(:leg1) do
+      make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
+                      underlying_last: underlying_last, expiration_date: expiration1)
+    end
+    let(:legs) { [leg1] }
+    let(:callput) { :put }
+    let(:last1) { 2.0 }
+    let(:underlying_last) { 148.18 }
+    let(:status) { :open }
+    let(:expiration1) { nil }
+
+    context 'with a short put' do
+      let(:side1) { :short }
+      let(:strike1) { 150 }
+
+      context 'and leg is opening' do
+        let(:direction1) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_open' do
+            expect(container.action).to eq :sell_to_open
+          end
+        end
+      end
+
+      context 'and leg is closing' do
+        let(:direction1) { :closing }
+
+        describe '#opening' do
+          it 'returns false' do
+            expect(container.opening?).to eq false
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_close' do
+            expect(container.action).to eq :sell_to_close
+          end
+        end
+      end
+    end
+
+    context 'with a long put' do
+      let(:side1) { :long }
+      let(:strike1) { 150 }
+
+      context 'and leg is opening' do
+        let(:direction1) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :buy_to_open' do
+            expect(container.action).to eq :buy_to_open
+          end
+        end
+      end
+
+      context 'and leg is closing' do
+        let(:direction1) { :closing }
+
+        describe '#opening' do
+          it 'returns false' do
+            expect(container.opening?).to eq false
+          end
+        end
+
+        describe '#action' do
+          it 'returns :buy_to_close' do
+            expect(container.action).to eq :buy_to_close
+          end
+        end
+      end
+    end
+  end
+
+  context 'where it is a 2-leg put position container' do
+    let(:leg1) do
+      make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
+                      underlying_last: underlying_last, expiration_date: expiration1)
+    end
+    let(:leg2) do
+      make_option_leg(callput: callput, side: side2, direction: direction2, strike: strike2, last: last2,
+                      underlying_last: underlying_last, expiration_date: expiration2)
+    end
+    let(:legs) { [leg1, leg2] }
+    let(:callput) { :put }
+    let(:last1) { 2.0 }
+    let(:last2) { 1.1 }
+    let(:underlying_last) { 148.18 }
+    let(:status) { :open }
+    let(:expiration1) { nil }
+    let(:expiration2) { nil }
+
+    context 'with a short vertical put spread' do
+      let(:side1) { :short }
+      let(:side2) { :long }
+      let(:strike1) { 150 }
+      let(:strike2) { 140 }
+
+      context 'and legs are opening' do
+        let(:direction1) { :opening }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_open' do
+            expect(container.action).to eq :sell_to_open
+          end
+        end
+      end
+
+      context 'and legs are closing' do
+        let(:direction1) { :closing }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns false' do
+            expect(container.opening?).to eq false
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_close' do
+            expect(container.action).to eq :sell_to_close
+          end
+        end
+      end
+
+      context 'and legs are mixed opening / closing' do
+        let(:direction1) { :opening }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll' do
+            expect(container.action).to eq :roll
+          end
+        end
+      end
+    end
+
+    context 'with a long vertical put spread' do
+      let(:side1) { :long }
+      let(:side2) { :short }
+      let(:strike1) { 150 }
+      let(:strike2) { 140 }
+
+      context 'and legs are opening' do
+        let(:direction1) { :opening }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :buy_to_open' do
+            expect(container.action).to eq :buy_to_open
+          end
+        end
+      end
+
+      context 'and legs are closing' do
+        let(:direction1) { :closing }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns false' do
+            expect(container.opening?).to eq false
+          end
+        end
+
+        describe '#action' do
+          it 'returns :buy_to_close' do
+            expect(container.action).to eq :buy_to_close
+          end
+        end
+      end
+
+      context 'and legs are mixed opening / closing' do
+        let(:direction1) { :opening }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll' do
+            expect(container.action).to eq :roll
+          end
+        end
+      end
+    end
+
+    context 'with a calendar put spread' do
+      let(:side1) { :short }
+      let(:side2) { :long }
+      let(:strike1) { 150 }
+      let(:strike2) { 150 }
+      let(:date1) { Date.today }
+      let(:date2) { date1 + 30 }
+      let(:expiration1) { make_expiration(year: date1.year, month: date1.month, day: date1.day) }
+      let(:expiration2) { make_expiration(year: date2.year, month: date2.month, day: date2.day) }
+
+      context 'and legs are opening' do
+        let(:direction1) { :opening }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_open' do
+            expect(container.action).to eq :sell_to_open
+          end
+        end
+      end
+
+      context 'and legs are closing' do
+        let(:direction1) { :closing }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns false' do
+            expect(container.opening?).to eq false
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_close' do
+            expect(container.action).to eq :sell_to_close
+          end
+        end
+      end
+
+      context 'and legs are mixed opening / closing' do
+        let(:direction1) { :opening }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll_in' do
+            expect(container.action).to eq :roll_in
+          end
+        end
+      end
+
+      context 'and legs are mixed closing / opening' do
+        let(:direction1) { :closing }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll_out' do
+            expect(container.action).to eq :roll_out
+          end
+        end
+      end
+    end
+
+    context 'with a reverse calendar put spread' do
+      let(:side1) { :long }
+      let(:side2) { :short }
+      let(:strike1) { 150 }
+      let(:strike2) { 150 }
+      let(:date1) { Date.today }
+      let(:date2) { date1 + 30 }
+      let(:expiration1) { make_expiration(year: date1.year, month: date1.month, day: date1.day) }
+      let(:expiration2) { make_expiration(year: date2.year, month: date2.month, day: date2.day) }
+
+      context 'and legs are opening' do
+        let(:direction1) { :opening }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :buy_to_open' do
+            expect(container.action).to eq :buy_to_open
+          end
+        end
+      end
+
+      context 'and legs are closing' do
+        let(:direction1) { :closing }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns false' do
+            expect(container.opening?).to eq false
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_close' do
+            expect(container.action).to eq :buy_to_close
+          end
+        end
+      end
+
+      context 'and legs are mixed opening / closing' do
+        let(:direction1) { :opening }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll_in' do
+            expect(container.action).to eq :roll_in
+          end
+        end
+      end
+
+      context 'and legs are mixed closing / opening' do
+        let(:direction1) { :closing }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll_out' do
+            expect(container.action).to eq :roll_out
+          end
+        end
+      end
+    end
+
+    context 'with a diagonal put spread' do
+      let(:side1) { :short }
+      let(:side2) { :long }
+      let(:strike1) { 150 }
+      let(:strike2) { 140 }
+      let(:date1) { Date.today }
+      let(:date2) { date1 + 30 }
+      let(:expiration1) { make_expiration(year: date1.year, month: date1.month, day: date1.day) }
+      let(:expiration2) { make_expiration(year: date2.year, month: date2.month, day: date2.day) }
+
+      context 'and legs are opening' do
+        let(:direction1) { :opening }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_open' do
+            expect(container.action).to eq :sell_to_open
+          end
+        end
+      end
+
+      context 'and legs are closing' do
+        let(:direction1) { :closing }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns false' do
+            expect(container.opening?).to eq false
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_close' do
+            expect(container.action).to eq :sell_to_close
+          end
+        end
+      end
+
+      context 'and legs are mixed opening / closing' do
+        let(:direction1) { :opening }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll_in' do
+            expect(container.action).to eq :roll_in
+          end
+        end
+      end
+
+      context 'and legs are mixed closing / opening' do
+        let(:direction1) { :closing }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll_out' do
+            expect(container.action).to eq :roll_out
+          end
+        end
+      end
+    end
+
+    context 'with a reverse diagonal put spread' do
+      let(:side1) { :long }
+      let(:side2) { :short }
+      let(:strike1) { 150 }
+      let(:strike2) { 140 }
+      let(:date1) { Date.today }
+      let(:date2) { date1 + 30 }
+      let(:expiration1) { make_expiration(year: date1.year, month: date1.month, day: date1.day) }
+      let(:expiration2) { make_expiration(year: date2.year, month: date2.month, day: date2.day) }
+
+      context 'and legs are opening' do
+        let(:direction1) { :opening }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :buy_to_open' do
+            expect(container.action).to eq :buy_to_open
+          end
+        end
+      end
+
+      context 'and legs are closing' do
+        let(:direction1) { :closing }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns false' do
+            expect(container.opening?).to eq false
+          end
+        end
+
+        describe '#action' do
+          it 'returns :sell_to_close' do
+            expect(container.action).to eq :buy_to_close
+          end
+        end
+      end
+
+      context 'and legs are mixed opening / closing' do
+        let(:direction1) { :opening }
+        let(:direction2) { :closing }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll_in' do
+            expect(container.action).to eq :roll_in
+          end
+        end
+      end
+
+      context 'and legs are mixed closing / opening' do
+        let(:direction1) { :closing }
+        let(:direction2) { :opening }
+
+        describe '#opening' do
+          it 'returns true' do
+            expect(container.opening?).to eq true
+          end
+        end
+
+        describe '#action' do
+          it 'returns :roll_out' do
+            expect(container.action).to eq :roll_out
+          end
+        end
+      end
+    end
+  end
+
+  context 'where it is a 1-leg order container' do
+    # all the same tests as the position container
+  end
+
+  context 'where it is a 2-leg order container' do
+    # same
+  end
+
+  # this is unique to orders... we do not have 4-leg position containers because we do
+  # not mix puts and calls (yet?)
+  context 'where it is a 4-leg order container' do
+  end
+
+end

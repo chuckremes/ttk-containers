@@ -378,7 +378,7 @@ RSpec.shared_examples 'leg interface - short put greeks' do
     end
 
     it 'returns the same absolute value of quote theta' do
-      expect(container.theta).to eq quote.theta.abs
+      expect(container.theta.abs).to eq quote.theta.abs
     end
   end
 

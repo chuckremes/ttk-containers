@@ -80,6 +80,7 @@ module Helper
                       placed_time: Time.now, execution_time: Time.now, preview_time: Time.now,
                       leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
     product = make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
+
     quote = make_default_equity_option_quote(callput: callput, last: last, product: product)
 
     klass.new(
