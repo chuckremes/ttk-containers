@@ -61,14 +61,17 @@ EquityOptions. Every Quote contains a Product, so we can easily differentiate.
 
 # Leg
 
-A Leg can be either a Leg::Position or a Leg::Order. The interfaces are
-exactly the same. However, not all fields in a Leg::Order are populated.
+A Leg can contain information for a Position or an Order. The difference
+between the two is that not all fields are populated for Position or for
+Order.
+
 For a Position, the quantity, paid price, execution
-time, side, and status are all easily determined. Several Leg::Position
+time, side, and status are all easily determined. Several Leg
 objects related together create a Legs::Position where we can determine
 aggregate characteristics from the Leg objects.
 
-A Leg::Order is different in that it doesn't necessarily have a specific
+A Leg with an Order is different in that it doesn't necessarily have 
+a specific
 price particularly when it's part of a spread. The Legs::Order has the
 aggregate price but determining the Leg price at any given moment is
 pointless. We want the Spread to execute at a particular value; the Leg
@@ -77,7 +80,7 @@ values are a means to that end.
 # Legs
 
 These are collection containers that aggregate information from 
-Leg::Position or Leg::Order objects. In the case of a Legs::Position,
+Leg objects. In the case of a Legs::Position,
 the value of the container is determined by its constituent Leg objects.
 In the case of a Legs::Order, the container itself has a value while
 the Leg objects do not; that is, the container value is not aggregated
@@ -92,6 +95,44 @@ The same is true for a Legs::Position. We have a locked value from the
 price we paid, but there's also a current market value determined by
 the Leg Quotes.
 
-A Leg::Order can be opening or closing. Using that value plus the long /
-short sides of the legs determines buy_to_open, buy_to_close, sell_to_open,
-and sell_to_close. 
+A Leg can be long or short. A Legs::Position by definition is an open
+position therefore we can apply that "open" characteristic to the
+long and short values of the legs. A short leg can then be categorized
+as "sell_to_open" while a long leg is "buy_to_open". 
+
+A Legs::Order can be either opening or closing. The vendors typically
+tag each leg with the `buy`, `sell`, `buy_to_open` / `sell_to_open`, 
+`buy_to_close` / `sell_to_close` order types. Our Leg objects do not
+track open/close information.
+
+An Order contains 3 pieces of metadata to classify it.
+
+1. `primary_type`: valid values are `:solo` for a single standalone leg and `:spread` for a multi-leg combo
+2. `secondary_type`: `:solo`, `:vertical`, `:calendar`, `:diagonal`, `:straddle`, `:strangle`
+3. `tertiary_type`: `:in` or `:out`
+
+Here's how those 3 bits of info can be used to identify any order type.
+The first bit is simple. If it's a solo leg, then it's long/short 
+stock/put/call. That's all it can be. The other 2 bits are ignored.
+If it's a `:spread`, then the other 2 bits are important. We classify
+by counting the number of puts, calls, expirations, and strikes. 
+
+| Option Kinds | Expirations | Strikes | Type          |
+|--------------|-------------|---------|---------------|
+| Call or Put  | 1           | 2       | vertical      |
+| Call or Put  | 2           | 1       | calendar      |
+| Call or Put  | 2           | 2       | diagonal      |
+| Call or Put  | 2           | 4       | spread roll   |
+| Call + Put   | 1           | 1       | straddle      |
+| Call + Put   | 1           | 2       | strangle      |
+| Call + Put   | 1           | 4       | iron condor   |
+| Call + Put   | 2           | 4       | iron calendar |
+
+Each of the types in the table can also be reversed. A short vertical
+is usually called a credit spread instead of a reverse vertical, so
+the naming isn't completely consistent. Reverse calendars and reverse
+diagonals often require the highest options trading level to do since
+the front leg is long and the back leg is short.
+
+I rarely trade butterflies or flies, so they aren't in the table. Will
+add them some day.
