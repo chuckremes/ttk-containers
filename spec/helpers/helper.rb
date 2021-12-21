@@ -15,9 +15,9 @@ module Helper
   end
 
   def make_equity_option_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:,
-                               strike: 150.0, last:, spread: 0.03, volume:, product:)
+                               strike: 150.0, last:, underlying_last:, spread: 0.03, volume:, product:)
 
-    greeks = FakeGreeks.from(price: last, strike: 155.5, callput: product.callput,
+    greeks = FakeGreeks.from(price: underlying_last, strike: strike, callput: product.callput,
                              dte: (product.expiration_date.date - Date.today).to_i)
 
     klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: last + spread, bid: last - spread,
@@ -41,11 +41,16 @@ module Helper
   end
 
   def make_equity_expiration
-    make_expiration(year:0, month: 0, day: 0)
+    make_expiration(year: 0, month: 0, day: 0)
   end
 
-  def make_default_equity_option_product
-    make_product(symbol: "AAPL", strike: 155.5, callput: :put, security_type: :equity_option, expiration_date: make_default_expiration)
+  def make_default_equity_option_product(callput: :put, strike: 155.5, expiration_date: nil)
+    make_product(symbol: "AAPL",
+                 strike: strike,
+                 callput: callput,
+                 security_type: :equity_option,
+                 expiration_date: (expiration_date || make_default_expiration)
+    )
   end
 
   def make_default_equity_product
@@ -57,15 +62,44 @@ module Helper
                       product: make_default_equity_product)
   end
 
-  def make_default_equity_option_quote(callput: :call, last: 154.18)
-    product = make_default_equity_option_product
-    product.callput = callput
+  def make_default_equity_option_quote(callput: :call, strike: 155.5, last: 1.4, underlying_last: 154.18, product: nil, expiration_date: nil)
+    product ||= make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
 
-    make_equity_option_quote(quote_timestamp: Time.now, quote_status: :realtime, last: last, volume: 1234,
+    make_equity_option_quote(quote_timestamp: Time.now,
+                             quote_status: :realtime,
+                             last: last,
+                             underlying_last: underlying_last,
+                             volume: 1234,
                              product: product)
   end
 
+  def make_option_leg(klass: TTK::Containers::Leg::Example, callput:, side:, direction:, strike:,
+                      last:, underlying_last:,
+                      expiration_date: nil, unfilled_quantity: 0, filled_quantity: 1,
+                      execution_price: 1.0, order_price: 0.0, stop_price: 0.0,
+                      placed_time: Time.now, execution_time: Time.now, preview_time: Time.now,
+                      leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
+    product = make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
+    quote = make_default_equity_option_quote(callput: callput, last: last, product: product)
 
+    klass.new(
+      product: product,
+      side: side,
+      direction: direction,
+      unfilled_quantity: unfilled_quantity,
+      filled_quantity: filled_quantity,
+      execution_price: execution_price,
+      order_price: order_price,
+      placed_time: placed_time,
+      execution_time: execution_time,
+      preview_time: preview_time,
+      leg_status: leg_status,
+      leg_id: leg_id,
+      stop_price: stop_price,
+      fees: fees,
+      commission: commission
+    )
+  end
 
   # option price = dte * delta
   # closer to strike means closer to 50 delta; every 1% above/below changes
@@ -90,8 +124,8 @@ module Helper
       attr_reader :price, :dte, :strike
 
       def initialize(price:, strike:, dte:)
-        @price  = price.to_f
-        @dte    = dte.to_f
+        @price = price.to_f
+        @dte = dte.to_f
         @strike = strike.to_f
         @change = difference / price.to_f
       end
@@ -151,7 +185,7 @@ module Helper
         if itm?
           1 - (1 / dte)
         else
-          (strike - option_price) * delta.abs
+          difference.abs * delta.abs
         end
       end
 
@@ -174,7 +208,7 @@ module Helper
         if itm?
           1 - (1 / dte)
         else
-          (option_price - strike) * delta.abs
+          difference.abs * delta.abs
         end
       end
 
