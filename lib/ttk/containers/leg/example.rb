@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module TTK
   module Containers
     module Leg
-
       # The basic unit of an Order or Position.
       # We do not include actions like :buy_to_open at this level. That is inferred
       # from the Order body itself. Legs are either long or short.
@@ -16,17 +17,13 @@ module TTK
       # action onto the legs.
       #
       Example = Struct.new(*Interface.base_methods,
-                       keyword_init: true
-      ) do
-
+                           keyword_init: true) do
         # Order of inclusion is important. The #delta method in ComposedMethods needs to
         # load last so any call to #super will trigger that method on Quote::Forward
         include Quote::Forward
         include Product::Forward
         include ComposedMethods
       end
-
-
     end
   end
 end

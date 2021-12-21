@@ -479,4 +479,49 @@ RSpec.shared_examples 'leg interface - basic behavior' do
       expect(container.placed_time).to be_kind_of(Time)
     end
   end
+
+  context 'when it is opening' do
+    let(:direction) { :opening }
+
+    describe '#direction' do
+
+      it 'returns :opening' do
+        expect(container.direction).to eq :opening
+      end
+    end
+
+    describe '#opening?' do
+      it 'returns true' do
+        expect(container.opening?).to be true
+      end
+    end
+
+    describe '#closing?' do
+      it 'returns false' do
+        expect(container.closing?).to be false
+      end
+    end
+  end
+
+  context 'when it is closing' do
+    let(:direction) { :closing }
+
+    describe '#direction' do
+      it 'returns :closing' do
+        expect(container.direction).to eq :closing
+      end
+    end
+
+    describe '#opening?' do
+      it 'returns false' do
+        expect(container.opening?).to be false
+      end
+    end
+
+    describe '#closing?' do
+      it 'returns true' do
+        expect(container.closing?).to be true
+      end
+    end
+  end
 end

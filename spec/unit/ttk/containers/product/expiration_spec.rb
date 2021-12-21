@@ -1,4 +1,6 @@
-require "ttk/containers/rspec/shared_expiration_spec"
+# frozen_string_literal: true
+
+require 'ttk/containers/rspec/shared_expiration_spec'
 
 RSpec.describe TTK::Containers::Product::Expiration::Example do
   let(:year) { 2021 }
@@ -9,29 +11,28 @@ RSpec.describe TTK::Containers::Product::Expiration::Example do
     described_class.new(year: year, month: month, day: day)
   end
 
-  describe "creation" do
-    it "returns an expiration instance" do
+  describe 'creation' do
+    it 'returns an expiration instance' do
       expect(expiration).to be_instance_of(described_class)
     end
 
-    include_examples "expiration interface - required methods", TTK::Containers::Product::Expiration
+    include_examples 'expiration interface - required methods', TTK::Containers::Product::Expiration
   end
 
-  describe "#year" do
-    include_examples "expiration interface - year"
+  describe '#year' do
+    include_examples 'expiration interface - year'
   end
 
-  describe "#month" do
-    include_examples "expiration interface - month"
+  describe '#month' do
+    include_examples 'expiration interface - month'
   end
 
-  describe "#day" do
-    include_examples "expiration interface - day"
+  describe '#day' do
+    include_examples 'expiration interface - day'
   end
 
   describe '#date' do
     include_examples 'expiration interface - date'
-
   end
 
   describe '#iso8601' do

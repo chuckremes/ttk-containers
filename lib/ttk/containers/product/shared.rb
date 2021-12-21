@@ -1,8 +1,9 @@
-require_relative "expiration/shared"
+# frozen_string_literal: true
+
+require_relative 'expiration/shared'
 
 module TTK
   module Containers
-
     # Defines an Equity or EquityOption product. Will some day be extended to
     # include Futures and Futures Options.
     #
@@ -12,32 +13,31 @@ module TTK
     # and so the order of definitions is important.
     #
     module Product
-
       module ComposedMethods
         def call?
-          equity_option? && :call == callput
+          equity_option? && callput == :call
         end
 
         def put?
-          equity_option? && :put == callput
+          equity_option? && callput == :put
         end
 
         def equity?
-          :equity == security_type
+          security_type == :equity
         end
 
         def equity_option?
-          :equity_option == security_type
+          security_type == :equity_option
         end
 
         def osi
           if equity_option?
-            symbol.ljust(6, "-") +
-              (expiration_date.year % 2000).to_s.rjust(2, "0") +
-              expiration_date.month.to_s.rjust(2, "0") +
-              expiration_date.day.to_s.rjust(2, "0") +
-              (call? ? "C" : "P") +
-              strike.to_i.to_s.rjust(5, "0") + ((strike - strike.to_i) * 1000).to_i.to_s.rjust(3, "0")
+            symbol.ljust(6, '-') +
+              (expiration_date.year % 2000).to_s.rjust(2, '0') +
+              expiration_date.month.to_s.rjust(2, '0') +
+              expiration_date.day.to_s.rjust(2, '0') +
+              (call? ? 'C' : 'P') +
+              strike.to_i.to_s.rjust(5, '0') + ((strike - strike.to_i) * 1000).to_i.to_s.rjust(3, '0')
           else
             symbol
           end
@@ -58,7 +58,7 @@ module TTK
       #
       module Interface
         def self.base_methods
-          [:security_type, :callput, :strike, :symbol, :expiration_date]
+          %i[security_type callput strike symbol expiration_date]
         end
 
         def self.required_methods
@@ -71,7 +71,6 @@ module TTK
         extend Forwardable
         def_delegators :product, *Interface.required_methods
       end
-
     end
   end
 end

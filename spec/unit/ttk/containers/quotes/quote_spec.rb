@@ -1,4 +1,6 @@
-require "ttk/containers/rspec/shared_quote_spec"
+# frozen_string_literal: true
+
+require 'ttk/containers/rspec/shared_quote_spec'
 
 module SpecialForTesting
   def set(key, value)
@@ -46,27 +48,26 @@ RSpec.describe TTK::Containers::Quote::Example do
                         vega: vega,
                         rho: rho,
                         iv: iv,
-                        product: product
-    )
+                        product: product)
   end
 
-  describe "creation" do
-    it "returns a Quote instance" do
+  describe 'creation' do
+    it 'returns a Quote instance' do
       expect(container).to be_instance_of(described_class)
     end
 
-    include_examples "quote interface - required methods", TTK::Containers::Quote
+    include_examples 'quote interface - required methods', TTK::Containers::Quote
   end
 
   context 'equity' do
     let(:product) { make_default_equity_product }
 
-    describe "basic interface" do
+    describe 'basic interface' do
       # quote_timestamp, quote_status, ask, bid, last, and volume must be defined for this to work
-      include_examples "quote interface - methods equity"
+      include_examples 'quote interface - methods equity'
     end
 
-    describe "#update_quote" do
+    describe '#update_quote' do
       let(:security_type) { :equity_option }
       let(:update_object) { {} }
 
@@ -74,20 +75,20 @@ RSpec.describe TTK::Containers::Quote::Example do
         update_object.extend(SpecialForTesting)
       end
 
-      include_examples "quote interface - update equity"
+      include_examples 'quote interface - update equity'
     end
   end
 
   context 'equity option' do
     let(:product) { make_default_equity_option_product }
 
-    describe "basic interface" do
+    describe 'basic interface' do
       # quote_timestamp, quote_status, ask, bid, last, and volume must be defined for this to work
       # also requires delta, gamma, theta, vega, rho, iv, dte, open_interest, multiplier, intrinsic, and extrinsic
-      include_examples "quote interface - methods equity_option"
+      include_examples 'quote interface - methods equity_option'
     end
 
-    describe "#update_quote" do
+    describe '#update_quote' do
       let(:security_type) { :equity_option }
       let(:update_object) { {} }
 
@@ -95,7 +96,7 @@ RSpec.describe TTK::Containers::Quote::Example do
         update_object.extend(SpecialForTesting)
       end
 
-      include_examples "quote interface - update equity_option"
+      include_examples 'quote interface - update equity_option'
     end
   end
 end

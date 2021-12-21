@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module TTK
   module Containers
     module Leg
-
       EPOCH = Time.utc(1970, 1, 1, 0, 0, 0)
 
       # Any concrete implementation of a Leg class from a vendor must provide
@@ -9,26 +10,26 @@ module TTK
       # of these too.
       module Interface
         def self.base_methods
-          [
-            :product, :quote,
-            :side, :unfilled_quantity, :filled_quantity, :execution_price,
-            :order_price, :placed_time, :execution_time, :preview_time,
-            :leg_status, :leg_id, :stop_price, :fees, :commission
+          %i[
+            product quote
+            side unfilled_quantity filled_quantity execution_price
+            order_price placed_time execution_time preview_time
+            leg_status leg_id stop_price fees commission direction
           ]
         end
 
         def self.required_methods
           m = base_methods +
-            ComposedMethods.public_instance_methods +
-            Product::Interface.required_methods +
-            Quote::Interface.required_methods
+              ComposedMethods.public_instance_methods +
+              Product::Interface.required_methods +
+              Quote::Interface.required_methods
 
-          m.uniq.reject { |m| disallowed_methods.include?(m) }
+          m.uniq.reject { |d| disallowed_methods.include?(d) }
         end
 
         # We can"t include Comparable methods in our required list
         def self.disallowed_methods
-          [:<=>, :clamp, :<=, :>=, :==, :<, :>, :between?]
+          %i[<=> clamp <= >= == < > between?]
         end
       end
 
@@ -41,11 +42,19 @@ module TTK
         # logic.
 
         def long?
-          :long == side
+          side == :long
         end
 
         def short?
-          :short == side
+          side == :short
+        end
+
+        def opening?
+          direction == :opening
+        end
+
+        def closing?
+          direction == :closing
         end
 
         # Greeks!
@@ -61,31 +70,34 @@ module TTK
 
         def delta
           return super if long?
+
           -super
         end
 
         def gamma
           return super if long?
+
           -super
         end
 
         def theta
           return super if long?
+
           -super
         end
 
         def vega
           return super if long?
+
           -super
         end
 
         def rho
           return super if long?
+
           -super
         end
       end
-
     end
-
   end
 end

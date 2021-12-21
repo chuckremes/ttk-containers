@@ -18,6 +18,7 @@ RSpec.describe TTK::Containers::Leg::Example do
   let(:placed_time) { TTK::Containers::Leg::EPOCH }
   let(:execution_time) { TTK::Containers::Leg::EPOCH }
   let(:preview_time) { TTK::Containers::Leg::EPOCH }
+  let(:direction) { :opening }
 
   subject(:container) do
     described_class.new(quote: quote,
@@ -34,7 +35,8 @@ RSpec.describe TTK::Containers::Leg::Example do
                         stop_price: stop_price,
                         placed_time: placed_time,
                         execution_time: execution_time,
-                        preview_time: preview_time
+                        preview_time: preview_time,
+                        direction: direction
     )
   end
 
@@ -54,6 +56,7 @@ RSpec.describe TTK::Containers::Leg::Example do
     let(:placed_time) { TTK::Containers::Leg::EPOCH }
     let(:execution_time) { Time.new(now.year, now.month, now.day, 0, 0, 0, Eastern_TZ) }
     let(:preview_time) { TTK::Containers::Leg::EPOCH }
+    let(:direction) { :opening }
 
     context 'where it is short call then' do
       let(:quote) { make_default_equity_option_quote(callput: :call) }
@@ -106,6 +109,7 @@ RSpec.describe TTK::Containers::Leg::Example do
     let(:placed_time) { TTK::Containers::Leg::EPOCH }
     let(:execution_time) { Time.new(now.year, now.month, now.day, 0, 0, 0, Eastern_TZ) }
     let(:preview_time) { TTK::Containers::Leg::EPOCH }
+    let(:direction) { :closing }
 
     context 'where it is short call then' do
       let(:quote) { make_default_equity_option_quote(callput: :call) }

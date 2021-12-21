@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 module TTK
   module Containers
     module Product
       module Expiration
-
         module ComposedMethods
           include Comparable
 
@@ -11,7 +12,7 @@ module TTK
           end
 
           def iso8601
-            @iso8601 ||= ("%04d%02d%02d" % [year, month, day])
+            @iso8601 ||= format('%04d%02d%02d', year, month, day)
           end
 
           def <=>(other)
@@ -21,17 +22,17 @@ module TTK
 
         module Interface
           def self.base_methods
-            [:year, :month, :day]
+            %i[year month day]
           end
 
           def self.required_methods
             base_methods +
-              ComposedMethods.public_instance_methods.reject {|m| disallowed_methods.include?(m) }
+              ComposedMethods.public_instance_methods.reject { |m| disallowed_methods.include?(m) }
           end
 
           # We can"t include Comparable methods in our required list
           def self.disallowed_methods
-              [:<=>, :clamp, :<=, :>=, :==, :<, :>, :between?]
+            %i[<=> clamp <= >= == < > between?]
           end
         end
 
