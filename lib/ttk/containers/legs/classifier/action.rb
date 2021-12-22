@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require_relative 'helpers'
 
 module TTK
   module Containers
@@ -6,6 +7,9 @@ module TTK
       module Classifier
         # Takes an array of Leg objects as an input and returns the inferred
         # action.
+        #
+        # Todo: move tests from legs_spec into a classifier_spec and make it shareable. Then legs_spec
+        # can run the shared specs indirectly via the #action method.
         #
         class Action
           UnhandledLegCount = Class.new(StandardError)
@@ -18,51 +22,6 @@ module TTK
             when 4 then Four.classify(legs)
             else
               raise UnhandledLegCount, "No idea how to classify with #{legs.count} legs!"
-            end
-          end
-
-          module Helpers
-            TooManyExpirations = Class.new(StandardError)
-
-            def expiration_count(legs)
-              value = legs.map(&:expiration_date).uniq.count
-              raise TooManyExpirations, "Container has #{value} expirations!" if value > 2
-
-              value
-            end
-
-            def strike_count(legs)
-              legs.map(&:strike).uniq.count
-            end
-
-            def sort(legs)
-              # sigh, ruby doesn't have a stable sort so we need to rely on this index hack,
-              # see here for details:
-              # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
-              if legs.all? {|l| l.put? }
-                legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                    .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
-              else
-                # note that a mix of calls and puts could be in this array
-                # so we just use ascending strike order as the default;
-                # besides, it's dumb to invert calls and puts
-                legs.sort_by.with_index { |leg, i| [leg.strike, i] }
-                    .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
-              end
-            end
-
-            def near_leg(legs)
-              sort(legs).first
-            end
-
-            def far_leg(legs)
-              sort(legs).last
-            end
-
-            # It's a roll when there's a mix of open & close operations
-            def roll?(legs)
-              near_leg(legs).opening? && far_leg(legs).closing? ||
-                near_leg(legs).closing? && far_leg(legs).opening?
             end
           end
 
@@ -89,7 +48,7 @@ module TTK
           end
 
           class Two
-            extend Helpers
+            extend Classifier::Helpers
 
             UnknownTwoLegType = Class.new(StandardError)
 
@@ -129,7 +88,7 @@ module TTK
           end
 
           class Four
-            extend Helpers
+            extend Classifier::Helpers
 
             UnknownFourLegType = Class.new(StandardError)
 
