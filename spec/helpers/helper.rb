@@ -103,6 +103,36 @@ module Helper
     )
   end
 
+  def make_option_order_leg(klass: TTK::Containers::Leg::Example, callput:, side:, direction:, strike:,
+                      last:, underlying_last:,
+                      expiration_date: nil, unfilled_quantity: 0, filled_quantity: 1,
+                      execution_price: 1.0, order_price: 0.0, stop_price: 0.0,
+                      placed_time: Time.now, execution_time: Time.now, preview_time: Time.now,
+                      leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
+    product = make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
+
+    quote = make_default_equity_option_quote(callput: callput, last: last, product: product)
+
+    klass.new(
+      product: product,
+      quote: quote,
+      side: side,
+      direction: direction,
+      unfilled_quantity: unfilled_quantity,
+      filled_quantity: filled_quantity,
+      execution_price: execution_price,
+      order_price: order_price,
+      placed_time: placed_time,
+      execution_time: execution_time,
+      preview_time: preview_time,
+      leg_status: leg_status,
+      leg_id: leg_id,
+      stop_price: stop_price,
+      fees: fees,
+      commission: commission
+    )
+  end
+
   def make_equity_leg(klass: TTK::Containers::Leg::Example, side:, direction:, underlying_last:,
                       unfilled_quantity: 0, filled_quantity: 1, execution_price: 1.0, order_price: 0.0,
                       stop_price: 0.0, placed_time: Time.now, execution_time: Time.now, preview_time: Time.now,

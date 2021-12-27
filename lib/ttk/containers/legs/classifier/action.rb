@@ -104,6 +104,7 @@ module TTK
             end
 
             def self.iron_condor(near, far)
+              binding.pry
               return :roll_in if roll?(near, far) && near.opening?
               return :roll_out if roll?(near, far) && near.closing?
 

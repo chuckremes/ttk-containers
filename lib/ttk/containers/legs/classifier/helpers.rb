@@ -27,6 +27,15 @@ module TTK
             def closing?
               all?(&:closing?)
             end
+
+            def short?
+              # assumes sorted, always pick the first leg of the container
+              first.short?
+            end
+
+            def long?
+              !short?
+            end
           end
 
           def leg_count(legs)
@@ -151,7 +160,7 @@ module TTK
             when 2
               [sorted.first, sorted.last]
             when 4
-              [sorted.slice(0, 2), sorted.slice(2, 2)]
+              [DirectionContainer.new(legs: sorted.slice(0, 2)), DirectionContainer.new(legs: sorted.slice(2, 2))]
             else
               raise BadLegCount.new
             end

@@ -193,6 +193,7 @@ module TTK
               when 1
                 # condor or butterfly
                 type = PotentialVertical.classify(near, far, legs)
+                "spread_#{type}".to_sym
               when 2
                 type = PotentialCalendar.classify(near, far, legs)
                 "spread_#{type}".to_sym
@@ -202,49 +203,6 @@ module TTK
             end
           end
 
-          # def old
-          #   # clarity over performance... besides, leg count will always be a small integer
-          #   leg_count = legs_array.count
-          #   all_calls = legs_array.all?(&:call?)
-          #   all_puts = legs_array.all?(&:put?)
-          #   mix = legs_array.any?(&:equity?) || (!all_calls && !all_puts)
-          #   expiration_count = legs_array.map { |leg| leg.expiration_date.date }.uniq.size
-          #
-          #   if leg_count == 1
-          #     # # solo leg!
-          #     # leg = legs_array.first
-          #     # return :equity_option if leg.equity_option?
-          #     # return :equity if leg.equity?
-          #   elsif all_puts
-          #     case leg_count
-          #     when 2
-          #       return :vertical_spread if expiration_count == 1
-          #
-          #       if expiration_count > 1
-          #         strike_count = container.legs.map(&:strike).uniq.count
-          #         return :calendar_spread if strike_count == 1
-          #         return :diagonal_spread if strike_count > 1
-          #       else
-          #         raise "#{call}: how did i get here? A"
-          #       end
-          #
-          #     when 4
-          #       case expiration_count
-          #       when 1
-          #         :butterfly
-          #       when 2
-          #         :spread_roll
-          #       else
-          #         raise "#{call}: how did i get here? B"
-          #       end
-          #     else
-          #       raise "#{self.class}.figure_unknown, all_puts with leg_count [#{leg_count}] is unhandled!"
-          #     end
-          #   else
-          #     binding.pry
-          #     raise "#{self.class}.figure_unknown, all_calls [#{all_calls}], all_puts [#{all_puts}], mix [#{mix}], expiration_count [#{expiration_count}], leg_count [#{leg_count}], unhandled combination! #{container.inspect}"
-          #   end
-          # end
         end
       end
     end
