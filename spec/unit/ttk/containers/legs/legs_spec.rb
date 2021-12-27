@@ -845,6 +845,73 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
         end
       end
     end
+
+    describe '#all_or_none' do
+      context 'when enabled' do
+        let(:all_or_none) { true }
+        it 'returns true' do
+          expect(container.all_or_none).to be true
+        end
+      end
+
+      context 'when disabled' do
+        let(:all_or_none) { false }
+        it 'returns false' do
+          expect(container.all_or_none).to be false
+        end
+      end
+    end
+
+    describe '#price_type' do
+      context 'when a net credit' do
+        let(:price_type) { :credit }
+        it 'returns :credit' do
+          expect(container.price_type).to eq :credit
+        end
+      end
+
+      context 'when a net debit' do
+        let(:price_type) { :debit }
+        it 'returns :debit' do
+          expect(container.price_type).to eq :debit
+        end
+      end
+
+      context 'when net even' do
+        let(:price_type) { :even }
+        it 'returns :even' do
+          expect(container.price_type).to eq :even
+        end
+      end
+    end
+
+    describe '#limit_price' do
+      it 'returns the price' do
+        expect(container.limit_price).to eq limit_price
+      end
+    end
+
+    describe '#stop_price' do
+      it 'returns the price' do
+        expect(container.stop_price).to eq stop_price
+      end
+    end
+
+    describe '#order_term' do
+      context 'when it is a GOOD FOR DAY order' do
+        let(:order_term) { :day }
+        it 'returns :day' do
+          expect(container.order_term).to eq :day
+        end
+      end
+
+      context 'when it is a GOOD UNTIL CANCEL order' do
+        let(:order_term) { :gtc }
+        it 'returns :gtc' do
+          expect(container.order_term).to eq :gtc
+        end
+      end
+    end
   end
 
   # this is unique to orders... we do not have 4-leg position containers because we do
