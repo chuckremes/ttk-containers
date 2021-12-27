@@ -41,7 +41,7 @@ module Helper
   end
 
   def make_equity_expiration
-    make_expiration(year: 0, month: 0, day: 0)
+    make_expiration(year: 1970, month: 1, day: 1)
   end
 
   def make_default_equity_option_product(callput: :put, strike: 155.5, expiration_date: nil)
@@ -57,9 +57,9 @@ module Helper
     make_product(symbol: "AAPL", strike: 0.0, callput: :none, security_type: :equity, expiration_date: make_equity_expiration)
   end
 
-  def make_default_equity_quote
-    make_equity_quote(quote_timestamp: Time.now, quote_status: :realtime, ask: 3.44, bid: 3.39, last: 3.4, volume: 1234,
-                      product: make_default_equity_product)
+  def make_default_equity_quote(product: nil, underlying_last: nil)
+    make_equity_quote(quote_timestamp: Time.now, quote_status: :realtime, last: (underlying_last || 3.4), volume: 1234,
+                      product: (product || make_default_equity_product))
   end
 
   def make_default_equity_option_quote(callput: :call, strike: 155.5, last: 1.4, underlying_last: 154.18, product: nil, expiration_date: nil)
@@ -85,6 +85,33 @@ module Helper
 
     klass.new(
       product: product,
+      quote: quote,
+      side: side,
+      direction: direction,
+      unfilled_quantity: unfilled_quantity,
+      filled_quantity: filled_quantity,
+      execution_price: execution_price,
+      order_price: order_price,
+      placed_time: placed_time,
+      execution_time: execution_time,
+      preview_time: preview_time,
+      leg_status: leg_status,
+      leg_id: leg_id,
+      stop_price: stop_price,
+      fees: fees,
+      commission: commission
+    )
+  end
+
+  def make_equity_leg(klass: TTK::Containers::Leg::Example, side:, direction:, underlying_last:,
+                      unfilled_quantity: 0, filled_quantity: 1, execution_price: 1.0, order_price: 0.0,
+                      stop_price: 0.0, placed_time: Time.now, execution_time: Time.now, preview_time: Time.now,
+                      leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
+    product = make_default_equity_product
+    quote = make_default_equity_quote(product: product, underlying_last: underlying_last)
+    klass.new(
+      product: product,
+      quote: quote,
       side: side,
       direction: direction,
       unfilled_quantity: unfilled_quantity,

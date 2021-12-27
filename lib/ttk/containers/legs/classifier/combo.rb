@@ -16,14 +16,20 @@ module TTK
         #  P/C   |  Leg#  | Expiration#  |  Strike#  | Near S/L   | Far S/L | Near O/C  |  Far O/C  | Name
         # P or C |    2   |     1        |    2      | long       | short   |  opening  |  opening  | long vertical
         # P or C |    2   |     1        |    2      | short      | long    |  opening  |  opening  | short vertical
+        # P or C |    2   |     1        |    2      | long       | short   |  closing  |  closing  | long vertical
+        # P or C |    2   |     1        |    2      | short      | long    |  closing  |  closing  | short vertical
         # P or C |    2   |     1        |    2      | s or l     | s or l  |  opening  |  closing  | roll_in
         # P or C |    2   |     1        |    2      | s or l     | s or l  |  closing  |  opening  | roll_out
         # P or C |    2   |     2        |    1      | short      | long    |  opening  |  opening  | calendar
         # P or C |    2   |     2        |    1      | long       | short   |  opening  |  opening  | reverse calendar
+        # P or C |    2   |     2        |    1      | short      | long    |  closing  |  closing  | calendar
+        # P or C |    2   |     2        |    1      | long       | short   |  closing  |  closing  | reverse calendar
         # P or C |    2   |     2        |    1      | s or l     | s or l  |  closing  |  opening  | roll_out
         # P or C |    2   |     2        |    1      | s or l     | s or l  |  opening  |  closing  | roll_in
         # P or C |    2   |     2        |    2      | short      | long    |  opening  |  opening  | diagonal
         # P or C |    2   |     2        |    2      | long       | short   |  opening  |  opening  | reverse diagonal
+        # P or C |    2   |     2        |    2      | short      | long    |  closing  |  closing  | diagonal
+        # P or C |    2   |     2        |    2      | long       | short   |  closing  |  closing  | reverse diagonal
         # P or C |    2   |     2        |    2      | s or l     | s or l  |  opening  |  closing  | roll_in
         # P or C |    2   |     2        |    2      | s or l     | s or l  |  closing  |  opening  | roll_out
         # P or C |    4   |     1        |    4      | short      | long    |  opening  |  opening  | condor
@@ -32,6 +38,12 @@ module TTK
         # P or C |    4   |     1        |    3      | long       | short   |  opening  |  opening  | reverse butterfly
         # P or C |    4   |     2        |    2      | short      | long    |  opening  |  opening  | condor calendar
         # P or C |    4   |     2        |    2      | long       | short   |  opening  |  opening  | reverse condor calendar
+        # P or C |    4   |     1        |    4      | short      | long    |  closing  |  closing  | condor
+        # P or C |    4   |     1        |    4      | long       | short   |  closing  |  closing  | reverse condor
+        # P or C |    4   |     1        |    3      | short      | long    |  closing  |  closing  | butterfly
+        # P or C |    4   |     1        |    3      | long       | short   |  closing  |  closing  | reverse butterfly
+        # P or C |    4   |     2        |    2      | short      | long    |  closing  |  closing  | condor calendar
+        # P or C |    4   |     2        |    2      | long       | short   |  closing  |  closing  | reverse condor calendar
         # P or C |    4   |     2        |    2      | s or l     | s or l  |  closing  |  opening  | roll_out
         # P or C |    4   |     2        |    2      | s or l     | s or l  |  opening  |  closing  | roll_in
         # P & C  |    4   |     2        |    2      | short      | long    |  opening  |  opening  | iron calendar
@@ -44,6 +56,7 @@ module TTK
         # E & P  |    2   |     1        |    1      | short      | short   |  opening  |  opening  | covered put
         # E & P  |    2   |     1        |    1      | long       | long    |  opening  |  opening  | married put
         class Combo
+          extend Helpers
           UnknownComboStructure = Class.new(StandardError)
 
           # Determine 3 things at the beginning:
@@ -55,18 +68,19 @@ module TTK
           #
           def self.classify(legs_array)
             case legs_array.count
-            when 1 then One.classify(legs_array)
-            when 2 then Two.classify(legs_array)
-            when 4 then Four.classify(legs_array)
+            when 1
+              One.classify(legs_array.first)
+            when 2
+              Two.classify(*split_near_far(legs_array), legs_array)
+            when 4
+              Four.classify(*split_near_far(legs_array), legs_array)
             else
               raise UnhandledLegCount, "No idea how to classify with #{legs.count} legs!"
             end
           end
 
           class One
-            def self.classify(legs)
-              leg = legs.first
-
+            def self.classify(leg)
               if leg.equity_option?
                 :equity_option
               elsif leg.equity?
@@ -80,59 +94,79 @@ module TTK
           class Two
             extend Classifier::Helpers
 
-            def self.classify(legs)
+            def self.classify(near, far, legs)
               if all_calls?(legs)
-                calls(legs_array)
+                same(near, far, legs)
               elsif all_puts?(legs)
-                puts(legs_array)
+                same(near, far, legs)
               elsif putcall_mix?(legs)
-                mix(legs_array)
+                mix(near, far, legs)
+              elsif contains_equity?(legs)
+                covered(near, far, legs)
               else
                 raise UnknownComboStructure.new
               end
             end
 
-            def self.puts(legs)
-              case leg_count(legs)
+            def self.same(near, far, legs)
+              case expiration_count(legs)
+              when 1
+                PotentialVertical.classify(near, far, legs)
               when 2
-                PotentialVertical.classify(legs)
-              when 4
-                PotentialCondor.classify(legs)
+                PotentialCalendar.classify(near, far, legs)
               else
-                UnknownComboStructure.new
+                raise UnknownComboStructure.new
               end
+            end
+
+            def self.covered(near, far, legs)
+              return :covered if near.equity? && near.long? && far.equity_option? && far.short?
+              return :covered if near.equity? && near.short? && far.equity_option? && far.short?
+              raise UnknownComboStructure.new
             end
           end
 
           class PotentialVertical
             extend Classifier::Helpers
 
-            def self.classify(legs)
-              case expiration_count(legs)
-              when 1
-                one_expiration(legs)
+            def self.classify(near, far, legs)
+              case strike_count(legs)
               when 2
-                two_expiration(legs)
-              else
+                return :vertical if all_opening?(legs) || all_closing?(legs)
+                return :vertical_roll if roll?(near, far)
+                raise UnknownComboStructure.new
+              when 3
+                return :butterfly if all_opening?(legs) || all_closing?(legs)
+                raise UnknownComboStructure.new
+              when 4
+                return :condor if all_opening?(legs) || all_closing?(legs)
                 raise UnknownComboStructure.new
               end
             end
+          end
 
-            def self.one_expiration(legs)
-              # must have two strikes, so look at opening / closing
-              return :vertical if all_opening?(legs)
-              :roll
-            end
+          class PotentialCalendar
+            extend Classifier::Helpers
 
-            def self.two_expiration(legs)
-              # may have one or two strikes
+            def self.classify(near, far, legs)
+              # may have 1-4 strikes
               case strike_count(legs)
               when 1
-                return :calendar if all_opening?(legs)
-                return :roll_in if near_leg(legs).opening? && far_leg(legs).closing?
-                return :roll_out if near_leg(legs).closing? && far_leg(legs).opening?
+                return :calendar if all_opening?(legs) || all_closing?(legs)
+                return :calendar_roll if roll?(near, far)
                 raise UnknownComboStructure.new
               when 2
+                return :diagonal if all_opening?(legs) || all_closing?(legs)
+                return :diagonal_roll if roll?(near, far)
+                raise UnknownComboStructure.new
+              when 3
+                return :butterfly if all_opening?(legs) || all_closing?(legs)
+                # not sure how a butterfly rolls...
+                raise UnknownComboStructure.new
+              when 4
+                return :condor if all_opening?(legs) || all_closing?(legs)
+                return :condor_roll if roll?(near, far)
+                raise UnknownComboStructure.new
               else
                 raise UnknownComboStructure.new
               end
@@ -142,54 +176,75 @@ module TTK
           class Four
             extend Classifier::Helpers
 
-            def self.classify(legs_array)
-
-            end
-          end
-
-          def old
-            # clarity over performance... besides, leg count will always be a small integer
-            leg_count        = legs_array.count
-            all_calls        = legs_array.all?(&:call?)
-            all_puts         = legs_array.all?(&:put?)
-            mix              = legs_array.any?(&:equity?) || (!all_calls && !all_puts)
-            expiration_count = legs_array.map { |leg| leg.expiration_date.date }.uniq.size
-
-            if leg_count == 1
-              # # solo leg!
-              # leg = legs_array.first
-              # return :equity_option if leg.equity_option?
-              # return :equity if leg.equity?
-            elsif all_puts
-              case leg_count
-              when 2
-                return :vertical_spread if expiration_count == 1
-
-                if expiration_count > 1
-                  strike_count = container.legs.map(&:strike).uniq.count
-                  return :calendar_spread if strike_count == 1
-                  return :diagonal_spread if strike_count > 1
-                else
-                  raise "#{call}: how did i get here? A"
-                end
-
-              when 4
-                case expiration_count
-                when 1
-                  :butterfly
-                when 2
-                  :spread_roll
-                else
-                  raise "#{call}: how did i get here? B"
-                end
+            def self.classify(near, far, legs)
+              if all_calls?(legs)
+                same(near, far, legs)
+              elsif all_puts?(legs)
+                same(near, far, legs)
+              elsif putcall_mix?(legs)
+                mix(near, far, legs)
               else
-                raise "#{self.class}.figure_unknown, all_puts with leg_count [#{leg_count}] is unhandled!"
+                raise UnknownComboStructure.new
               end
-            else
-              binding.pry
-              raise "#{self.class}.figure_unknown, all_calls [#{all_calls}], all_puts [#{all_puts}], mix [#{mix}], expiration_count [#{expiration_count}], leg_count [#{leg_count}], unhandled combination! #{container.inspect}"
+            end
+
+            def self.same(near, far, legs)
+              case expiration_count(legs)
+              when 1
+                # condor or butterfly
+                type = PotentialVertical.classify(near, far, legs)
+              when 2
+                type = PotentialCalendar.classify(near, far, legs)
+                "spread_#{type}".to_sym
+              else
+                raise UnknownComboStructure.new
+              end
             end
           end
+
+          # def old
+          #   # clarity over performance... besides, leg count will always be a small integer
+          #   leg_count = legs_array.count
+          #   all_calls = legs_array.all?(&:call?)
+          #   all_puts = legs_array.all?(&:put?)
+          #   mix = legs_array.any?(&:equity?) || (!all_calls && !all_puts)
+          #   expiration_count = legs_array.map { |leg| leg.expiration_date.date }.uniq.size
+          #
+          #   if leg_count == 1
+          #     # # solo leg!
+          #     # leg = legs_array.first
+          #     # return :equity_option if leg.equity_option?
+          #     # return :equity if leg.equity?
+          #   elsif all_puts
+          #     case leg_count
+          #     when 2
+          #       return :vertical_spread if expiration_count == 1
+          #
+          #       if expiration_count > 1
+          #         strike_count = container.legs.map(&:strike).uniq.count
+          #         return :calendar_spread if strike_count == 1
+          #         return :diagonal_spread if strike_count > 1
+          #       else
+          #         raise "#{call}: how did i get here? A"
+          #       end
+          #
+          #     when 4
+          #       case expiration_count
+          #       when 1
+          #         :butterfly
+          #       when 2
+          #         :spread_roll
+          #       else
+          #         raise "#{call}: how did i get here? B"
+          #       end
+          #     else
+          #       raise "#{self.class}.figure_unknown, all_puts with leg_count [#{leg_count}] is unhandled!"
+          #     end
+          #   else
+          #     binding.pry
+          #     raise "#{self.class}.figure_unknown, all_calls [#{all_calls}], all_puts [#{all_puts}], mix [#{mix}], expiration_count [#{expiration_count}], leg_count [#{leg_count}], unhandled combination! #{container.inspect}"
+          #   end
+          # end
         end
       end
     end

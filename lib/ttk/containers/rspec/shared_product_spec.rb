@@ -288,9 +288,9 @@ RSpec.shared_examples 'product interface - equity' do
   describe '#expiration_date' do
     let(:expiration) { container.expiration_date }
 
-    include_examples 'expiration interface - year 0'
-    include_examples 'expiration interface - month 0'
-    include_examples 'expiration interface - day 0'
+    include_examples 'expiration interface - year 1970'
+    include_examples 'expiration interface - month 1'
+    include_examples 'expiration interface - day 1'
   end
 
   describe '#osi' do

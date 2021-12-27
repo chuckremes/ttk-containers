@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'forwardable'
 
 module TTK
   module Containers
@@ -9,6 +10,24 @@ module TTK
         #
         module Helpers
           TooManyExpirations = Class.new(StandardError)
+          Needs4Legs = Class.new(StandardError)
+          BadLegCount = Class.new(StandardError)
+
+          DirectionContainer = Struct.new(:legs, keyword_init: true) do
+            include Enumerable
+
+            def each
+              legs.each { |leg| yield(leg) }
+            end
+
+            def opening?
+              all?(&:opening?)
+            end
+
+            def closing?
+              all?(&:closing?)
+            end
+          end
 
           def leg_count(legs)
             legs.count
@@ -53,18 +72,30 @@ module TTK
             end
           end
 
+          # Return the front month leg with the nearest expiration
           def near_leg(legs)
             sort(legs).first
           end
 
+          # Return the back month leg with the latest expiration
           def far_leg(legs)
             sort(legs).last
           end
 
-          # It's a roll when there's a mix of open & close operations
-          def roll?(legs)
-            near_leg(legs).opening? && far_leg(legs).closing? ||
-              near_leg(legs).closing? && far_leg(legs).opening?
+          # Return the pair of legs with the nearest expiration. Only valid
+          # on 4-leg constructs. Wraps the legs in a special container that
+          # only answers #opening? and #closing?
+          #
+          def near_legs(legs)
+            raise Needs4Legs.new unless legs.count == 4
+            pair = sort(legs).slice(0, 2)
+            DirectionContainer.new(legs: pair)
+          end
+
+          def far_legs(legs)
+            raise Needs4Legs.new unless legs.count == 4
+            pair = sort(legs).slice(2, 2)
+            DirectionContainer.new(legs: pair)
           end
 
           def all_puts?(legs)
@@ -80,6 +111,10 @@ module TTK
               legs.any? { |leg| leg.call? }
           end
 
+          def contains_equity?(legs)
+            legs.any? { |leg| leg.equity? }
+          end
+
           def all_opening?(legs)
             legs.all? { |leg| leg.opening? }
           end
@@ -91,6 +126,35 @@ module TTK
           def open_close_mix?(legs)
             legs.any? { |leg| leg.opening? } &&
               legs.any? { |leg| leg.closing? }
+          end
+
+          # It's a roll when there's a mix of open & close operations
+          def roll?(near, far)
+            near.opening? && far.closing? ||
+              near.closing? && far.opening?
+          end
+
+          def roll_in?(near, far)
+            near.opening? && far.closing?
+          end
+
+          def roll_out?(near, far)
+            near.closing? && far.opening?
+          end
+
+          def split_near_far(legs)
+            sorted = sort(legs)
+
+            case leg_count(legs)
+            when 1
+              [legs.first, nil]
+            when 2
+              [sorted.first, sorted.last]
+            when 4
+              [sorted.slice(0, 2), sorted.slice(2, 2)]
+            else
+              raise BadLegCount.new
+            end
           end
         end
       end

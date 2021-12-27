@@ -27,7 +27,7 @@ module TTK
         def expiration_date
           return orig_expiration_date if equity_option?
 
-          Expiration::Example.new(year: 0, month: 0, day: 0)
+          Expiration::Example.new(year: 1970, month: 1, day: 1)
         end
       end
     end

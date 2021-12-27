@@ -1,19 +1,20 @@
 # frozen_string_literal: true
+
 require_relative 'classifier/action'
+require_relative 'classifier/combo'
 
 module TTK
   module Containers
     module Legs
-
       module Shared
         module Interface
           def self.base_methods
-            %i[ legs status ]
+            %i[legs status]
           end
 
           def self.required_methods
             m = base_methods +
-              ComposedMethods.public_instance_methods
+                ComposedMethods.public_instance_methods
 
             m.uniq.reject { |m| disallowed_methods.include?(m) }
           end
@@ -22,13 +23,24 @@ module TTK
           def self.disallowed_methods
             %i[<=> clamp <= >= == < > between?]
           end
-
         end
 
         # The basic logic associated with any Leg Container. All leg containers must
         # implement the interface as defined in interface.rb. That concrete implementation
         # includes this shared module to round out the details
         module ComposedMethods
+
+          # Very important. We can infer the order_type from the contents of the legs.
+          #
+          def order_type
+            Classifier::Combo.classify(legs)
+          end
+
+          # Very important. We can infer the action from the contents of the legs.
+          #
+          def action
+            Classifier::Action.classify(legs)
+          end
 
           def leg_count
             legs.count
@@ -148,12 +160,12 @@ module TTK
       module Position
         module Interface
           def self.base_methods
-            Shared.base_methods
+            Shared::Interface.base_methods
           end
 
           def self.required_methods
             m = base_methods +
-              ComposedMethods.public_instance_methods
+                ComposedMethods.public_instance_methods
 
             m.uniq.reject { |m| disallowed_methods.include?(m) }
           end
@@ -165,21 +177,8 @@ module TTK
         end
 
         module ComposedMethods
+          include Shared::ComposedMethods
           MultipleSymbolError = Class.new(StandardError)
-
-          def rolling?
-            # only makes sense in the context of an Order
-            # a Position would, by definition, never see the closing leg because it is CLOSED
-            opening? && closing?
-          end
-
-          # Very important. We can infer the action from the contents of the legs.
-          #
-          # Leg Count:
-          #   1
-          def action
-            Classifier::Action.classify(legs)
-          end
         end
 
         module ClassMethods
@@ -187,7 +186,7 @@ module TTK
             # sigh, ruby doesn't have a stable sort so we need to rely on this index hack,
             # see here for details:
             # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
-            legs = if legs.all? { |l| l.put? }
+            legs = if legs.all?(&:put?)
                      legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
                          .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
                    else
@@ -198,61 +197,55 @@ module TTK
             new(legs: legs, status: status)
           end
         end
+      end
 
+      module Order
+        module Interface
+          def self.base_methods
+            Shared::Interface.base_methods +
+              %i[market_session all_or_none price_type limit_price stop_price order_term]
+          end
 
-        module Order
-          module Interface
-            def self.base_methods
-              Shared.base_methods +
-                %i[ market_session all_or_none price_type limit_price stop_price order_term ]
-            end
-
-            def self.required_methods
-              m = base_methods +
-                Shared::ComposedMethods.public_instance_methods +
+          def self.required_methods
+            m = base_methods +
                 ComposedMethods.public_instance_methods
 
-              m.uniq.reject { |m| disallowed_methods.include?(m) }
-            end
-
-            # We can"t include Comparable methods in our required list
-            def self.disallowed_methods
-              %i[<=> clamp <= >= == < > between?]
-            end
+            m.uniq.reject { |m| disallowed_methods.include?(m) }
           end
 
-          module ComposedMethods
-            MultipleSymbolError = Class.new(StandardError)
-
-            def rolling?
-              # only makes sense in the context of an Order
-              # a Position would, by definition, never see the closing leg because it is CLOSED
-              opening? && closing?
-            end
-
-            # Very important. We can infer the order_type from the contents of the legs.
-            #
-            def order_type
-              Classifier::Combo.classify(legs)
-            end
+          # We can"t include Comparable methods in our required list
+          def self.disallowed_methods
+            %i[<=> clamp <= >= == < > between?]
           end
+        end
 
-          module ClassMethods
-            def from_legs(legs:, status:)
-              # sigh, ruby doesn't have a stable sort so we need to rely on this index hack,
-              # see here for details:
-              # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
-              legs = if legs.all? { |l| l.put? }
-                       legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                           .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
-                     else
-                       legs.sort_by.with_index { |leg, i| [leg.strike, i] }
-                           .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
-                     end
+        module ComposedMethods
+          include Shared::ComposedMethods
+          MultipleSymbolError = Class.new(StandardError)
 
-              new(legs: legs, status: status)
-            end
+          def rolling?
+            # only makes sense in the context of an Order
+            # a Position would, by definition, never see the closing leg because it is CLOSED
+            opening? && closing?
           end
+        end
+
+        module ClassMethods
+          def from_legs(legs:, status:)
+            # sigh, ruby doesn't have a stable sort so we need to rely on this index hack,
+            # see here for details:
+            # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
+            legs = if legs.all?(&:put?)
+                     legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
+                         .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                   else
+                     legs.sort_by.with_index { |leg, i| [leg.strike, i] }
+                         .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                   end
+
+            new(legs: legs, status: status)
+          end
+        end
       end
     end
   end
