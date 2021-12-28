@@ -136,3 +136,13 @@ the front leg is long and the back leg is short.
 
 I rarely trade butterflies or flies, so they aren't in the table. Will
 add them some day.
+
+| Implemented | P / C | Strikes | Strike Ratio | Expirations | Near E | Far E      | Name             |
+|-------------|-------|---------|--------------|-------------|--------|------------|------------------|
+| Y           | P     | 2       | 1:1          | 1           | STO    | -          | Vertical         |
+| Y           | P     | 1       | 1:1          | 2           | STO    | BTO        | Calendar         |
+| Y           | P     | 1       | 1:1          | 2           | BTO    | STO        | Reverse Calendar |
+| Y           | P     | 2       | 1:1          | 2           | STO    | BTO        | Diagonal         |
+| Y           | P     | 2       | 1:1          | 2           | BTO    | STO        | Reverse Diagonal |
+|             |       |         |              |             |        |            |            
+| Y           | P     | 4       | 1 / 1        | 2           | 1 / 1  | SpreadRoll |
