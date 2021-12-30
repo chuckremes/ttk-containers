@@ -609,7 +609,7 @@ RSpec.shared_examples "legs interface with long closing vertical" do
   end
 end
 
-RSpec.shared_examples "legs interface - 4-leg order roll out" do
+RSpec.shared_examples "legs interface with vertical roll out" do
   describe "#opening" do
     it "returns true" do
       expect(container.opening?).to eq true
@@ -624,7 +624,7 @@ RSpec.shared_examples "legs interface - 4-leg order roll out" do
 
   describe "#rolling" do
     it "returns true" do
-      expect(container.rolling?).to eq true
+      expect(container.rolling?).to be true
     end
   end
 
@@ -639,9 +639,15 @@ RSpec.shared_examples "legs interface - 4-leg order roll out" do
       expect(container.order_type).to eq :spread_diagonal_roll
     end
   end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
 end
 
-RSpec.shared_examples "legs interface - 4-leg order roll in" do
+RSpec.shared_examples "legs interface with vertical roll in" do
   describe "#opening" do
     it "returns true" do
       expect(container.opening?).to eq true
@@ -656,7 +662,7 @@ RSpec.shared_examples "legs interface - 4-leg order roll in" do
 
   describe "#rolling" do
     it "returns true" do
-      expect(container.rolling?).to eq true
+      expect(container.rolling?).to be true
     end
   end
 
@@ -669,6 +675,12 @@ RSpec.shared_examples "legs interface - 4-leg order roll in" do
   describe "#order_type" do
     it "returns :spread_diagonal_roll" do
       expect(container.order_type).to eq :spread_diagonal_roll
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
     end
   end
 end

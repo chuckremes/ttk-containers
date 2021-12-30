@@ -277,43 +277,35 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
       let(:expiration1) { today }
       let(:expiration2) { today + 45 }
 
-      # include_examples "legs interface with vertical roll out"
+      include_examples "legs interface with vertical roll out"
+    end
 
-      describe "#opening" do
-        it "returns true" do
-          expect(container.opening?).to eq true
-        end
+    context "that is rolling out" do
+      let(:callput) { :put }
+      let(:leg1) do
+        make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1,
+                        expiration_date: expiration1)
       end
+      let(:leg2) do
+        make_option_leg(callput: callput, side: side2, direction: direction1, strike: strike2,
+                        expiration_date: expiration1)
+      end
+      let(:leg3) do
+        make_option_leg(callput: callput, side: side2, direction: direction2, strike: strike1,
+                        expiration_date: expiration2)
+      end
+      let(:leg4) do
+        make_option_leg(callput: callput, side: side1, direction: direction2, strike: strike2,
+                        expiration_date: expiration2)
+      end
+      let(:side1) { :long }
+      let(:side2) { :short }
+      let(:direction1) { :opening }
+      let(:direction2) { :closing }
+      let(:expiration1) { today }
+      let(:expiration2) { today + 45 }
 
-      describe "#closing" do
-        it "returns true" do
-          expect(container.closing?).to eq true
-        end
-      end
-
-      describe "#rolling" do
-        it "returns true" do
-          expect(container.rolling?).to be true
-        end
-      end
-
-      describe "#action" do
-        it "returns :roll_out" do
-          expect(container.action).to eq :roll_out
-        end
-      end
-
-      describe "#order_type" do
-        it "returns :spread_diagonal_roll" do
-          expect(container.order_type).to eq :spread_diagonal_roll
-        end
-      end
-
-      describe "#price" do
-        it "returns the price" do
-          expect(container.price).to eq price
-        end
-      end
+      include_examples "legs interface with vertical roll in"
     end
   end
 
