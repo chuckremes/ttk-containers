@@ -61,6 +61,554 @@ RSpec.shared_examples "legs interface with required methods" do |parent_module|
   end
 end
 
+RSpec.shared_examples "legs interface with short opening option" do
+  describe "#opening" do
+    it "returns true" do
+      expect(container.opening?).to eq true
+    end
+  end
+
+  describe "#closing" do
+    it "returns false" do
+      expect(container.closing?).to eq false
+    end
+  end
+
+  describe "#action" do
+    it "returns :sell_to_open" do
+      expect(container.action).to eq :sell_to_open
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :equity_option" do
+      expect(container.order_type).to eq :equity_option
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+
+  describe "#delta" do
+    it "matches delta of the leg" do
+      expect(container.delta).to eq leg.delta
+    end
+  end
+
+  describe "#gamma" do
+    it "matches gamma of the leg" do
+      expect(container.gamma).to eq leg.gamma
+    end
+  end
+
+  describe "#theta" do
+    it "matches theta of the leg" do
+      expect(container.theta).to eq leg.theta
+    end
+  end
+
+  describe "#vega" do
+    it "matches the vega of the leg" do
+      expect(container.vega).to eq leg.vega
+    end
+  end
+
+  describe "#rho" do
+    it "matches the rho of the leg" do
+      expect(container.rho).to eq leg.rho
+    end
+  end
+end
+
+RSpec.shared_examples "legs interface with short closing option" do
+  describe "#opening" do
+    it "returns false" do
+      expect(container.opening?).to eq false
+    end
+  end
+
+  describe "#closing" do
+    it "returns true" do
+      expect(container.closing?).to eq true
+    end
+  end
+
+  describe "#action" do
+    it "returns :sell_to_close" do
+      expect(container.action).to eq :sell_to_close
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :equity_option" do
+      expect(container.order_type).to eq :equity_option
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+
+  describe "#delta" do
+    it "matches delta of the leg" do
+      expect(container.delta).to eq leg.delta
+    end
+  end
+
+  describe "#gamma" do
+    it "matches gamma of the leg" do
+      expect(container.gamma).to eq leg.gamma
+    end
+  end
+
+  describe "#theta" do
+    it "matches theta of the leg" do
+      expect(container.theta).to eq leg.theta
+    end
+  end
+
+  describe "#vega" do
+    it "matches the vega of the leg" do
+      expect(container.vega).to eq leg.vega
+    end
+  end
+
+  describe "#rho" do
+    it "matches the rho of the leg" do
+      expect(container.rho).to eq leg.rho
+    end
+  end
+end
+
+RSpec.shared_examples "legs interface with long opening option" do
+  describe "#opening" do
+    it "returns true" do
+      expect(container.opening?).to eq true
+    end
+  end
+
+  describe "#closing" do
+    it "returns false" do
+      expect(container.closing?).to eq false
+    end
+  end
+
+  describe "#action" do
+    it "returns :sell_to_open" do
+      expect(container.action).to eq :buy_to_open
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :equity_option" do
+      expect(container.order_type).to eq :equity_option
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+
+  describe "#delta" do
+    it "matches delta of the leg" do
+      expect(container.delta).to eq leg.delta
+    end
+  end
+
+  describe "#gamma" do
+    it "matches gamma of the leg" do
+      expect(container.gamma).to eq leg.gamma
+    end
+  end
+
+  describe "#theta" do
+    it "matches theta of the leg" do
+      expect(container.theta).to eq leg.theta
+    end
+  end
+
+  describe "#vega" do
+    it "matches the vega of the leg" do
+      expect(container.vega).to eq leg.vega
+    end
+  end
+
+  describe "#rho" do
+    it "matches the rho of the leg" do
+      expect(container.rho).to eq leg.rho
+    end
+  end
+end
+
+RSpec.shared_examples "legs interface with long closing option" do
+  describe "#opening" do
+    it "returns false" do
+      expect(container.opening?).to eq false
+    end
+  end
+
+  describe "#closing" do
+    it "returns true" do
+      expect(container.closing?).to eq true
+    end
+  end
+
+  describe "#action" do
+    it "returns :sell_to_close" do
+      expect(container.action).to eq :buy_to_close
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :equity_option" do
+      expect(container.order_type).to eq :equity_option
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+
+  describe "#delta" do
+    it "matches delta of the leg" do
+      expect(container.delta).to eq leg.delta
+    end
+  end
+
+  describe "#gamma" do
+    it "matches gamma of the leg" do
+      expect(container.gamma).to eq leg.gamma
+    end
+  end
+
+  describe "#theta" do
+    it "matches theta of the leg" do
+      expect(container.theta).to eq leg.theta
+    end
+  end
+
+  describe "#vega" do
+    it "matches the vega of the leg" do
+      expect(container.vega).to eq leg.vega
+    end
+  end
+
+  describe "#rho" do
+    it "matches the rho of the leg" do
+      expect(container.rho).to eq leg.rho
+    end
+  end
+end
+
+RSpec.shared_examples "legs interface with short opening stock" do
+  describe "#opening" do
+    it "returns true" do
+      expect(container.opening?).to eq true
+    end
+  end
+
+  describe "#closing" do
+    it "returns false" do
+      expect(container.closing?).to eq false
+    end
+  end
+
+  describe "#action" do
+    it "returns :sell" do
+      expect(container.action).to eq :sell
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :equity_option" do
+      expect(container.order_type).to eq :equity
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+end
+
+RSpec.shared_examples "legs interface with short opening vertical" do
+  describe "#opening" do
+    it "returns true" do
+      expect(container.opening?).to eq true
+    end
+  end
+
+  describe "#closing" do
+    it "returns false" do
+      expect(container.closing?).to eq false
+    end
+  end
+
+  describe "#action" do
+    it "returns :sell_to_open" do
+      expect(container.action).to eq :sell_to_open
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :vertical" do
+      expect(container.order_type).to eq :vertical
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+
+  describe "#delta" do
+    it "matches combined delta of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.delta) / l.filled_quantity.abs) }
+      expect(container.delta).to eq sum
+    end
+  end
+
+  describe "#gamma" do
+    it "matches combined gamma of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.gamma) / l.filled_quantity.abs) }
+      expect(container.gamma).to eq sum
+    end
+  end
+
+  describe "#theta" do
+    it "matches combined theta of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.theta) / l.filled_quantity.abs) }
+      expect(container.theta).to eq sum
+    end
+  end
+
+  describe "#vega" do
+    it "matches combined vega of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.vega) / l.filled_quantity.abs) }
+      expect(container.vega).to eq sum
+    end
+  end
+
+  describe "#rho" do
+    it "matches combined rho of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.rho) / l.filled_quantity.abs) }
+      expect(container.rho).to eq sum
+    end
+  end
+end
+
+RSpec.shared_examples "legs interface with short closing vertical" do
+  describe "#opening" do
+    it "returns false" do
+      expect(container.opening?).to eq false
+    end
+  end
+
+  describe "#closing" do
+    it "returns true" do
+      expect(container.closing?).to eq true
+    end
+  end
+
+  describe "#action" do
+    it "returns :sell_to_close" do
+      expect(container.action).to eq :sell_to_close
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :vertical" do
+      expect(container.order_type).to eq :vertical
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+
+  describe "#delta" do
+    it "matches combined delta of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.delta) / l.filled_quantity.abs) }
+      expect(container.delta).to eq sum
+    end
+  end
+
+  describe "#gamma" do
+    it "matches combined gamma of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.gamma) / l.filled_quantity.abs) }
+      expect(container.gamma).to eq sum
+    end
+  end
+
+  describe "#theta" do
+    it "matches combined theta of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.theta) / l.filled_quantity.abs) }
+      expect(container.theta).to eq sum
+    end
+  end
+
+  describe "#vega" do
+    it "matches combined vega of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.vega) / l.filled_quantity.abs) }
+      expect(container.vega).to eq sum
+    end
+  end
+
+  describe "#rho" do
+    it "matches combined rho of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.rho) / l.filled_quantity.abs) }
+      expect(container.rho).to eq sum
+    end
+  end
+end
+
+RSpec.shared_examples "legs interface with long opening vertical" do
+  describe "#opening" do
+    it "returns true" do
+      expect(container.opening?).to eq true
+    end
+  end
+
+  describe "#closing" do
+    it "returns false" do
+      expect(container.closing?).to eq false
+    end
+  end
+
+  describe "#action" do
+    it "returns :buy_to_open" do
+      expect(container.action).to eq :buy_to_open
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :vertical" do
+      expect(container.order_type).to eq :vertical
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+
+  describe "#delta" do
+    it "matches combined delta of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.delta) / l.filled_quantity.abs) }
+      expect(container.delta).to eq sum
+    end
+  end
+
+  describe "#gamma" do
+    it "matches combined gamma of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.gamma) / l.filled_quantity.abs) }
+      expect(container.gamma).to eq sum
+    end
+  end
+
+  describe "#theta" do
+    it "matches combined theta of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.theta) / l.filled_quantity.abs) }
+      expect(container.theta).to eq sum
+    end
+  end
+
+  describe "#vega" do
+    it "matches combined vega of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.vega) / l.filled_quantity.abs) }
+      expect(container.vega).to eq sum
+    end
+  end
+
+  describe "#rho" do
+    it "matches combined rho of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.rho) / l.filled_quantity.abs) }
+      expect(container.rho).to eq sum
+    end
+  end
+end
+
+RSpec.shared_examples "legs interface with long closing vertical" do
+  describe "#opening" do
+    it "returns false" do
+      expect(container.opening?).to eq false
+    end
+  end
+
+  describe "#closing" do
+    it "returns true" do
+      expect(container.closing?).to eq true
+    end
+  end
+
+  describe "#action" do
+    it "returns :buy_to_close" do
+      expect(container.action).to eq :buy_to_close
+    end
+  end
+
+  describe "#order_type" do
+    it "returns :vertical" do
+      expect(container.order_type).to eq :vertical
+    end
+  end
+
+  describe "#price" do
+    it "returns the price" do
+      expect(container.price).to eq price
+    end
+  end
+
+  describe "#delta" do
+    it "matches combined delta of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.delta) / l.filled_quantity.abs) }
+      expect(container.delta).to eq sum
+    end
+  end
+
+  describe "#gamma" do
+    it "matches combined gamma of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.gamma) / l.filled_quantity.abs) }
+      expect(container.gamma).to eq sum
+    end
+  end
+
+  describe "#theta" do
+    it "matches combined theta of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.theta) / l.filled_quantity.abs) }
+      expect(container.theta).to eq sum
+    end
+  end
+
+  describe "#vega" do
+    it "matches combined vega of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.vega) / l.filled_quantity.abs) }
+      expect(container.vega).to eq sum
+    end
+  end
+
+  describe "#rho" do
+    it "matches combined rho of the legs" do
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.rho) / l.filled_quantity.abs) }
+      expect(container.rho).to eq sum
+    end
+  end
+end
+
 RSpec.shared_examples "legs interface - 4-leg order roll out" do
   describe "#opening" do
     it "returns true" do

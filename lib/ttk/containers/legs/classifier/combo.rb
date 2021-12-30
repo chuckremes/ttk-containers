@@ -131,6 +131,8 @@ module TTK
 
             def self.classify(near, far, legs)
               case strike_count(legs)
+              when 1
+                raise UnknownComboStructure.new
               when 2
                 return :vertical if all_opening?(legs) || all_closing?(legs)
                 return :vertical_roll if roll?(near, far)

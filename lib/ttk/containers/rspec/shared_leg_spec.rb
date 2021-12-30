@@ -540,15 +540,15 @@ RSpec.shared_examples "leg interface - basic behavior" do
     end
   end
 
-  describe "#execution_price" do
+  describe "#price" do
     it "returns a Float" do
-      expect(container.execution_price).to be_kind_of(Float)
+      expect(container.price).to be_kind_of(Float)
     end
   end
 
-  describe "#order_price" do
+  describe "#market_price" do
     it "returns a Float" do
-      expect(container.order_price).to be_kind_of(Float)
+      expect(container.market_price).to be_kind_of(Float)
     end
   end
 

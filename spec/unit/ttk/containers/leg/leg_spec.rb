@@ -11,8 +11,8 @@ RSpec.describe TTK::Containers::Leg::Example do
   let(:side) { :long }
   let(:unfilled_quantity) { 0 }
   let(:filled_quantity) { 0 }
-  let(:execution_price) { 5.21 }
-  let(:order_price) { 0.0 }
+  let(:price) { 5.21 }
+  let(:market_price) { 0.0 }
   let(:stop_price) { 0.0 }
   let(:now) { Time.now }
   let(:placed_time) { TTK::Containers::Leg::EPOCH }
@@ -30,8 +30,8 @@ RSpec.describe TTK::Containers::Leg::Example do
                         side: side,
                         unfilled_quantity: unfilled_quantity,
                         filled_quantity: filled_quantity,
-                        execution_price: execution_price,
-                        order_price: order_price,
+                        price: price,
+                        market_price: market_price,
                         stop_price: stop_price,
                         placed_time: placed_time,
                         execution_time: execution_time,

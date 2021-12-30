@@ -10,11 +10,13 @@ module TTK
       # of these too.
       module Interface
         def self.base_methods
+          # #price should reflect the cost of the container
+          # #market_price should reflect the cost using current quote
           %i[
             product quote
-            side unfilled_quantity filled_quantity execution_price
-            order_price placed_time execution_time preview_time
-            leg_status leg_id stop_price fees commission direction
+            side unfilled_quantity filled_quantity price stop_price
+            market_price placed_time execution_time preview_time
+            leg_status leg_id fees commission direction
           ]
         end
 

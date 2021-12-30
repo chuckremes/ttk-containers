@@ -1,11 +1,21 @@
 module Helper
 
-  def make_expiration(klass: TTK::Containers::Product::Expiration::Example, year:, month:, day:)
+  # Takes year, momth, day to set the date. When given a +date+ arg, that is
+  # used preferentially.
+  def make_expiration(klass: TTK::Containers::Product::Expiration::Example,
+                      year: nil, month: nil, day: nil, date: nil)
+    if date
+      year = date.year
+      month = date.month
+      day = date.day
+    end
+
     klass.new(year: year, month: month, day: day)
   end
 
   def make_product(klass: TTK::Containers::Product::Example, symbol:, strike:, callput:, security_type:, expiration_date:)
-    klass.new(symbol: symbol, strike: strike, callput: callput, security_type: security_type, expiration_date: expiration_date)
+    klass.new(symbol: symbol, strike: strike, callput: callput, security_type: security_type,
+              expiration_date: make_expiration(date: expiration_date))
   end
 
   def make_equity_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:,
@@ -33,15 +43,14 @@ module Helper
   end
 
   # Always make it around 45 DTE from today and a Friday
-  def make_default_expiration
-    date = Date.today + 45
+  def default_expiration(date: nil)
+    date ||= Date.today + 45
     date += 1 until date.wday == 5
-
-    make_expiration(year: date.year, month: date.month, day: date.day)
+    date
   end
 
-  def make_equity_expiration
-    make_expiration(year: 1970, month: 1, day: 1)
+  def equity_expiration
+    Date.new(1970, 1, 1)
   end
 
   def make_default_equity_option_product(callput: :put, strike: 155.5, expiration_date: nil)
@@ -49,12 +58,13 @@ module Helper
                  strike: strike,
                  callput: callput,
                  security_type: :equity_option,
-                 expiration_date: (expiration_date || make_default_expiration)
+                 expiration_date: default_expiration(date: expiration_date)
     )
   end
 
   def make_default_equity_product
-    make_product(symbol: "AAPL", strike: 0.0, callput: :none, security_type: :equity, expiration_date: make_equity_expiration)
+    make_product(symbol: "AAPL", strike: 0.0, callput: :none, security_type: :equity,
+                 expiration_date: equity_expiration)
   end
 
   def make_default_equity_quote(product: nil, underlying_last: nil)
@@ -73,10 +83,10 @@ module Helper
                              product: product)
   end
 
-  def make_option_leg(klass: TTK::Containers::Leg::Example, callput:, side:, direction:, strike:,
-                      last:, underlying_last:,
+  def make_option_leg(klass: TTK::Containers::Leg::Example, callput: :call, side: :long,
+                      direction: :opening, strike: 100, last: 4.56,
                       expiration_date: nil, unfilled_quantity: 0, filled_quantity: 1,
-                      execution_price: 1.0, order_price: 0.0, stop_price: 0.0,
+                      price: 1.0, market_price: 0.0, stop_price: 0.0,
                       placed_time: Time.now, execution_time: Time.now, preview_time: Time.now,
                       leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
     product = make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
@@ -90,8 +100,8 @@ module Helper
       direction: direction,
       unfilled_quantity: unfilled_quantity,
       filled_quantity: filled_quantity,
-      execution_price: execution_price,
-      order_price: order_price,
+      price: price,
+      market_price: market_price,
       placed_time: placed_time,
       execution_time: execution_time,
       preview_time: preview_time,
@@ -104,14 +114,16 @@ module Helper
   end
 
   def make_option_order_leg(klass: TTK::Containers::Leg::Example, callput:, side:, direction:, strike:,
-                      last:, underlying_last:,
+                      last:,
                       expiration_date: nil, unfilled_quantity: 0, filled_quantity: 1,
-                      execution_price: 1.0, order_price: 0.0, stop_price: 0.0,
+                      price: 1.0, market_price: 0.0, stop_price: 0.0,
                       placed_time: Time.now, execution_time: Time.now, preview_time: Time.now,
                       leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
     product = make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
 
     quote = make_default_equity_option_quote(callput: callput, last: last, product: product)
+    # make sure sign of quantity is corrected
+    filled_quantity = side == :short ? -(filled_quantity.abs) : filled_quantity.abs
 
     klass.new(
       product: product,
@@ -120,8 +132,8 @@ module Helper
       direction: direction,
       unfilled_quantity: unfilled_quantity,
       filled_quantity: filled_quantity,
-      execution_price: execution_price,
-      order_price: order_price,
+      price: price,
+      market_price: market_price,
       placed_time: placed_time,
       execution_time: execution_time,
       preview_time: preview_time,
@@ -133,8 +145,8 @@ module Helper
     )
   end
 
-  def make_equity_leg(klass: TTK::Containers::Leg::Example, side:, direction:, underlying_last:,
-                      unfilled_quantity: 0, filled_quantity: 1, execution_price: 1.0, order_price: 0.0,
+  def make_equity_leg(klass: TTK::Containers::Leg::Example, side:, direction:, underlying_last: 100.78,
+                      unfilled_quantity: 0, filled_quantity: 1, price: 1.0, market_price: 0.0,
                       stop_price: 0.0, placed_time: Time.now, execution_time: Time.now, preview_time: Time.now,
                       leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
     product = make_default_equity_product
@@ -146,8 +158,8 @@ module Helper
       direction: direction,
       unfilled_quantity: unfilled_quantity,
       filled_quantity: filled_quantity,
-      execution_price: execution_price,
-      order_price: order_price,
+      price: price,
+      market_price: market_price,
       placed_time: placed_time,
       execution_time: execution_time,
       preview_time: preview_time,

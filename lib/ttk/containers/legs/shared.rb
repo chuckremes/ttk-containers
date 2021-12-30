@@ -185,6 +185,12 @@ module TTK
             # opening and closing
             false
           end
+
+          def price
+            legs.inject(0.0) do |memo, leg|
+              memo + (leg.filled_quantity * leg.price)
+            end
+          end
         end
 
         module ClassMethods
@@ -233,6 +239,11 @@ module TTK
             # only makes sense in the context of an Order
             # a Position would, by definition, never see the closing leg because it is CLOSED
             opening? && closing?
+          end
+
+          def price
+            # price of the container is stored at the top-level of the container
+            limit_price
           end
         end
 
