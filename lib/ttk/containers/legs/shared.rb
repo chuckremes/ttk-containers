@@ -179,6 +179,12 @@ module TTK
         module ComposedMethods
           include Shared::ComposedMethods
           MultipleSymbolError = Class.new(StandardError)
+
+          def rolling?
+            # a position is only open, never rolling which requires
+            # opening and closing
+            false
+          end
         end
 
         module ClassMethods

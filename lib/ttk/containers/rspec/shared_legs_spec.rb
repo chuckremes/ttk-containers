@@ -29,12 +29,12 @@ RSpec.shared_examples "legs interface with required methods" do |parent_module|
     end
   end
 
-  # # Order only
-  # describe "#rolling?" do
-  #   it "returns a boolean" do
-  #     expect(container.rolling?).to eq(true).or(eq(false))
-  #   end
-  # end
+  # Order only
+  describe "#rolling?" do
+    it "returns a boolean" do
+      expect(container.rolling?).to eq(true).or(eq(false))
+    end
+  end
 
   describe "#action" do
     before do
