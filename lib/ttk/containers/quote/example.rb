@@ -34,57 +34,57 @@ module TTK
 
         def multiplier
           return 1 if equity?
-          dig(:multiplier)
+          dig(:multiplier).to_f
         end
 
         def open_interest
           return 0 if equity?
-          dig(:open_interest)
+          dig(:open_interest).to_i
         end
 
         def dte
           return 0 if equity?
-          dig(:dte)
+          dig(:dte).to_i
         end
 
         def extrinsic
           return 0.0 if equity?
-          dig(:extrinsic)
+          dig(:extrinsic).to_f
         end
 
         def intrinsic
           return 0.0 if equity?
-          dig(:intrinsic)
+          dig(:intrinsic).to_f
         end
 
         def delta
           return 0.0 if equity?
-          dig(:delta)
+          dig(:delta).to_f
         end
 
         def gamma
           return 0.0 if equity?
-          dig(:gamma)
+          dig(:gamma).to_f
         end
 
         def theta
           return 0.0 if equity?
-          dig(:theta)
+          dig(:theta).to_f
         end
 
         def vega
           return 0.0 if equity?
-          dig(:vega)
+          dig(:vega).to_f
         end
 
         def rho
           return 0.0 if equity?
-          dig(:rho)
+          dig(:rho).to_f
         end
 
         def iv
           return 0.0 if equity?
-          dig(:iv)
+          dig(:iv).to_f
         end
       end
 

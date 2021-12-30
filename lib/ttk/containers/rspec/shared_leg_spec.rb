@@ -507,12 +507,10 @@ RSpec.shared_examples "leg interface - short put greeks" do
   end
 end
 
-RSpec.shared_examples "leg interface - basic behavior" do
-  # it_behaves_like "product interface - basic behaviors"
-
+RSpec.shared_examples "leg interface basic position behavior" do
   describe "#unfilled_quantity" do
-    it "returns the correct value" do
-      expect(container.unfilled_quantity).to eq unfilled_quantity
+    it "returns 0" do
+      expect(container.unfilled_quantity).to eq 0
     end
   end
 
@@ -522,57 +520,48 @@ RSpec.shared_examples "leg interface - basic behavior" do
     end
   end
 
-  describe "#side" do
-    it "returns a symbol" do
-      expect(container.side).to be_kind_of(Symbol)
+  context "when it is opening" do
+    let(:direction) { :opening }
+
+    describe "#direction" do
+      it "returns :opening" do
+        expect(container.direction).to eq :opening
+      end
+    end
+
+    describe "#opening?" do
+      it "returns true" do
+        expect(container.opening?).to be true
+      end
+    end
+
+    describe "#closing?" do
+      it "returns false" do
+        expect(container.closing?).to be false
+      end
     end
   end
 
-  describe "#fees" do
-    it "returns a Float" do
-      expect(container.fees).to be_kind_of(Float)
+  describe "#leg_status" do
+    context "when open" do
+      let(:leg_status) { :open }
+      it "returns :open" do
+        expect(container.leg_status).to eq :open
+      end
+    end
+  end
+end
+
+RSpec.shared_examples "leg interface basic order behavior" do
+  describe "#unfilled_quantity" do
+    it "returns the correct value" do
+      expect(container.unfilled_quantity).to eq unfilled_quantity
     end
   end
 
-  describe "#commission" do
-    it "returns a Float" do
-      expect(container.commission).to be_kind_of(Float)
-    end
-  end
-
-  describe "#price" do
-    it "returns a Float" do
-      expect(container.price).to be_kind_of(Float)
-    end
-  end
-
-  describe "#market_price" do
-    it "returns a Float" do
-      expect(container.market_price).to be_kind_of(Float)
-    end
-  end
-
-  describe "#stop_price" do
-    it "returns a Float" do
-      expect(container.stop_price).to be_kind_of(Float)
-    end
-  end
-
-  describe "#execution_time" do
-    it "returns a Time" do
-      expect(container.execution_time).to be_kind_of(Time)
-    end
-  end
-
-  describe "#preview_time" do
-    it "returns a Time" do
-      expect(container.preview_time).to be_kind_of(Time)
-    end
-  end
-
-  describe "#placed_time" do
-    it "returns a Time" do
-      expect(container.placed_time).to be_kind_of(Time)
+  describe "#filled_quantity" do
+    it "returns 0" do
+      expect(container.filled_quantity).to eq 0
     end
   end
 
@@ -627,9 +616,7 @@ RSpec.shared_examples "leg interface - basic behavior" do
       end
     end
   end
-end
 
-RSpec.shared_examples "leg interface - more order behavior" do
   context "when it is closing" do
     # only Order legs will respect this... Position legs hard code
     # to :opening since that's their definition

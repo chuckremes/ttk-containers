@@ -12,14 +12,115 @@ RSpec.shared_examples "quote interface with required methods" do |parent_module|
   end
 
   include_examples "product interface with required methods", TTK::Containers::Product
+
+  # Type check...
+
+  describe "#quote_timestamp" do
+    it "returns a Time" do
+      expect(container.quote_timestamp).to be_kind_of(Time)
+    end
+  end
+
+  describe "#quote_status" do
+    it "returns a Symbol" do
+      expect(container.quote_status).to be_kind_of(Symbol)
+    end
+  end
+
+  describe "#ask" do
+    it "returns a Float" do
+      expect(container.ask).to be_kind_of(Float)
+    end
+  end
+
+  describe "#bid" do
+    it "returns a Float" do
+      expect(container.bid).to be_kind_of(Float)
+    end
+  end
+
+  describe "#last" do
+    it "returns a Float" do
+      expect(container.last).to be_kind_of(Float)
+    end
+  end
+
+  describe "#volume" do
+    it "returns a Numeric" do
+      expect(container.volume).to be_kind_of(Numeric)
+    end
+  end
+
+  describe "#delta" do
+    it "returns a Float" do
+      expect(container.delta).to be_kind_of(Float)
+    end
+  end
+
+  describe "#gamma" do
+    it "returns a Float" do
+      expect(container.gamma).to be_kind_of(Float)
+    end
+  end
+
+  describe "#theta" do
+    it "returns a Float" do
+      expect(container.theta).to be_kind_of(Float)
+    end
+  end
+
+  describe "#vega" do
+    it "returns a Float" do
+      expect(container.vega).to be_kind_of(Float)
+    end
+  end
+
+  describe "#rho" do
+    it "returns a Float" do
+      expect(container.rho).to be_kind_of(Float)
+    end
+  end
+
+  describe "#iv" do
+    it "returns a Float" do
+      expect(container.iv).to be_kind_of(Float)
+    end
+  end
+
+  describe "#intrinsic" do
+    it "returns a Float" do
+      expect(container.intrinsic).to be_kind_of(Float)
+    end
+  end
+
+  describe "#extrinsic" do
+    it "returns a Float" do
+      expect(container.extrinsic).to be_kind_of(Float)
+    end
+  end
+
+  describe "#dte" do
+    it "returns a Numeric" do
+      expect(container.dte).to be_kind_of(Numeric)
+    end
+  end
+
+  describe "#open_interest" do
+    it "returns a Numeric" do
+      expect(container.open_interest).to be_kind_of(Numeric)
+    end
+  end
+
+  describe "#multiplier" do
+    it "returns a Numeric" do
+      expect(container.multiplier).to be_kind_of(Numeric)
+    end
+  end
+
 end
 
 RSpec.shared_examples "quote interface - methods equity" do
   describe "#quote_timestamp" do
-    it "is a kind of Time" do
-      expect(container.quote_timestamp).to be_kind_of(Time)
-    end
-
     it "returns the initialization value" do
       expect(container.quote_timestamp).to eq quote_timestamp
     end
@@ -32,149 +133,90 @@ RSpec.shared_examples "quote interface - methods equity" do
   end
 
   describe "#ask" do
-    it "returns a Float" do
-      expect(container.ask).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.ask).to eq ask
     end
   end
 
   describe "#bid" do
-    it "returns a Float" do
-      expect(container.bid).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.bid).to eq bid
     end
   end
 
   describe "#last" do
-    it "returns a Float" do
-      expect(container.last).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.last).to eq last
     end
   end
 
   describe "#volume" do
-    it "returns a Numeric" do
-      expect(container.volume).to be_kind_of(Numeric)
-    end
-
     it "returns the initialization value" do
       expect(container.volume).to eq volume
     end
   end
-  describe "#delta" do
-    it "is a kind of Float" do
-      expect(container.delta).to be_kind_of(Float)
-    end
 
+  describe "#delta" do
     it "returns 0" do
       expect(container.delta).to eq 0
     end
   end
 
   describe "#gamma" do
-    it "is a kind of Float" do
-      expect(container.gamma).to be_kind_of(Float)
-    end
-
     it "returns 0" do
       expect(container.gamma).to eq 0
     end
   end
 
   describe "#theta" do
-    it "is a kind of Float" do
-      expect(container.theta).to be_kind_of(Float)
-    end
-
     it "returns 0" do
       expect(container.theta).to eq 0
     end
   end
 
   describe "#vega" do
-    it "is a kind of Float" do
-      expect(container.vega).to be_kind_of(Float)
-    end
-
     it "returns 0" do
       expect(container.vega).to eq 0
     end
   end
 
   describe "#rho" do
-    it "is a kind of Float" do
-      expect(container.rho).to be_kind_of(Float)
-    end
-
     it "returns 0" do
       expect(container.rho).to eq 0
     end
   end
 
   describe "#iv" do
-    it "is a kind of Float" do
-      expect(container.iv).to be_kind_of(Float)
-    end
-
     it "returns 0" do
       expect(container.iv).to eq 0
     end
   end
 
   describe "#intrinsic" do
-    it "is a kind of Float" do
-      expect(container.intrinsic).to be_kind_of(Float)
-    end
-
     it "returns 0" do
       expect(container.intrinsic).to eq 0
     end
   end
 
   describe "#extrinsic" do
-    it "is a kind of Float" do
-      expect(container.extrinsic).to be_kind_of(Float)
-    end
-
     it "returns 0" do
       expect(container.extrinsic).to eq 0
     end
   end
 
   describe "#dte" do
-    it "is a kind of Numeric" do
-      expect(container.dte).to be_kind_of(Numeric)
-    end
-
     it "returns 0" do
       expect(container.dte).to eq 0
     end
   end
 
   describe "#open_interest" do
-    it "is a kind of Numeric" do
-      expect(container.open_interest).to be_kind_of(Numeric)
-    end
-
     it "returns 0" do
       expect(container.open_interest).to eq 0
     end
   end
 
   describe "#multiplier" do
-    it "is a kind of Numeric" do
-      expect(container.multiplier).to be_kind_of(Numeric)
-    end
-
     it "returns 1" do
       expect(container.multiplier).to eq 1
     end
@@ -183,10 +225,6 @@ end
 
 RSpec.shared_examples "quote interface - methods equity_option" do
   describe "#quote_timestamp" do
-    it "is a kind of Time" do
-      expect(container.quote_timestamp).to be_kind_of(Time)
-    end
-
     it "returns the initialization value" do
       expect(container.quote_timestamp).to eq quote_timestamp
     end
@@ -199,149 +237,90 @@ RSpec.shared_examples "quote interface - methods equity_option" do
   end
 
   describe "#ask" do
-    it "returns a Float" do
-      expect(container.ask).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.ask).to eq ask
     end
   end
 
   describe "#bid" do
-    it "returns a Float" do
-      expect(container.bid).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.bid).to eq bid
     end
   end
 
   describe "#last" do
-    it "returns a Float" do
-      expect(container.last).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.last).to eq last
     end
   end
 
   describe "#volume" do
-    it "returns a Numeric" do
-      expect(container.volume).to be_kind_of(Numeric)
-    end
-
     it "returns the initialization value" do
       expect(container.volume).to eq volume
     end
   end
-  describe "#delta" do
-    it "is a kind of Float" do
-      expect(container.delta).to be_kind_of(Float)
-    end
 
+  describe "#delta" do
     it "returns the initialization value" do
       expect(container.delta).to eq delta
     end
   end
 
   describe "#gamma" do
-    it "is a kind of Float" do
-      expect(container.gamma).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.gamma).to eq gamma
     end
   end
 
   describe "#theta" do
-    it "is a kind of Float" do
-      expect(container.theta).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.theta).to eq theta
     end
   end
 
   describe "#vega" do
-    it "is a kind of Float" do
-      expect(container.vega).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.vega).to eq vega
     end
   end
 
   describe "#rho" do
-    it "is a kind of Float" do
-      expect(container.rho).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.rho).to eq rho
     end
   end
 
   describe "#iv" do
-    it "is a kind of Float" do
-      expect(container.iv).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.iv).to eq iv
     end
   end
 
   describe "#intrinsic" do
-    it "is a kind of Float" do
-      expect(container.intrinsic).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.intrinsic).to eq intrinsic
     end
   end
 
   describe "#extrinsic" do
-    it "is a kind of Float" do
-      expect(container.extrinsic).to be_kind_of(Float)
-    end
-
     it "returns the initialization value" do
       expect(container.extrinsic).to eq extrinsic
     end
   end
 
   describe "#dte" do
-    it "is a kind of Numeric" do
-      expect(container.dte).to be_kind_of(Numeric)
-    end
-
     it "returns the initialization value" do
       expect(container.dte).to eq dte
     end
   end
 
   describe "#open_interest" do
-    it "is a kind of Numeric" do
-      expect(container.open_interest).to be_kind_of(Numeric)
-    end
-
     it "returns the initialization value" do
       expect(container.open_interest).to eq open_interest
     end
   end
 
   describe "#multiplier" do
-    it "is a kind of Numeric" do
-      expect(container.multiplier).to be_kind_of(Numeric)
-    end
-
     it "returns the initialization value" do
       expect(container.multiplier).to eq multiplier
     end

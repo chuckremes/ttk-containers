@@ -108,7 +108,7 @@ RSpec.describe TTK::Containers::Leg::Example do
       end
     end
 
-    include_examples "leg interface - basic behavior"
+    include_examples "leg interface basic position behavior"
   end
 
   context "order leg" do
@@ -150,6 +150,6 @@ RSpec.describe TTK::Containers::Leg::Example do
       include_examples "leg interface - long put greeks"
     end
 
-    include_examples "leg interface - basic behavior"
+    include_examples "leg interface basic order behavior"
   end
 end
