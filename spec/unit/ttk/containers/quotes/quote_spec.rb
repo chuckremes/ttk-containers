@@ -56,7 +56,7 @@ RSpec.describe TTK::Containers::Quote::Example do
       expect(container).to be_instance_of(described_class)
     end
 
-    include_examples 'quote interface - required methods', TTK::Containers::Quote
+    include_examples 'quote interface with required methods', TTK::Containers::Quote
   end
 
   context 'equity' do

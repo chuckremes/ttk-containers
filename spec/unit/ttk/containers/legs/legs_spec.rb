@@ -1,19 +1,27 @@
 # frozen_string_literal: true
 
-require 'ttk/containers/rspec/shared_legs_spec'
+require "ttk/containers/rspec/shared_legs_spec"
 
 RSpec.describe TTK::Containers::Legs::Position::Example do
   subject(:container) do
-    described_class.from_legs(
-      legs: legs,
-      status: status
-    )
+    described_class.from_legs(legs: legs, status: status)
   end
 
-  context 'where it is a 1-leg put position container' do
+  describe "creation" do
+    let(:legs) { [] }
+    let(:status) { :open }
+
+    it "returns the correct class instance" do
+      expect(container).to be_kind_of(described_class)
+    end
+
+    include_examples "legs interface with required methods", TTK::Containers::Legs::Position
+  end
+
+  context "where it is a 1-leg put position container" do
     let(:leg1) do
       make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
-                      underlying_last: underlying_last, expiration_date: expiration1)
+        underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:legs) { [leg1] }
     let(:callput) { :put }
@@ -22,72 +30,72 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
     let(:status) { :open }
     let(:expiration1) { nil }
 
-    context 'with a short put' do
+    context "with a short put" do
       let(:side1) { :short }
       let(:strike1) { 150 }
 
-      context 'and leg is opening' do
+      context "and leg is opening" do
         let(:direction1) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_open' do
+        describe "#action" do
+          it "returns :sell_to_open" do
             expect(container.action).to eq :sell_to_open
           end
         end
 
-        describe '#order_type' do
-          context 'when it is an option leg' do
-            it 'returns :equity_option' do
+        describe "#order_type" do
+          context "when it is an option leg" do
+            it "returns :equity_option" do
               expect(container.order_type).to eq :equity_option
             end
           end
 
-          context 'when it is an equity leg' do
+          context "when it is an equity leg" do
             let(:leg1) do
               make_equity_leg(side: side1, direction: direction1, underlying_last: underlying_last)
             end
 
-            it 'returns :equity' do
+            it "returns :equity" do
               expect(container.order_type).to eq :equity
             end
           end
         end
       end
 
-      context 'and leg is closing' do
+      context "and leg is closing" do
         let(:direction1) { :closing }
 
-        describe '#opening' do
-          it 'returns false' do
+        describe "#opening" do
+          it "returns false" do
             expect(container.opening?).to eq false
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_close' do
+        describe "#action" do
+          it "returns :sell_to_close" do
             expect(container.action).to eq :sell_to_close
           end
         end
 
-        describe '#order_type' do
-          context 'when it is an option leg' do
-            it 'returns :equity_option' do
+        describe "#order_type" do
+          context "when it is an option leg" do
+            it "returns :equity_option" do
               expect(container.order_type).to eq :equity_option
             end
           end
 
-          context 'when it is an equity leg' do
+          context "when it is an equity leg" do
             let(:leg1) do
               make_equity_leg(side: side1, direction: direction1, underlying_last: underlying_last)
             end
 
-            it 'returns :equity' do
+            it "returns :equity" do
               expect(container.order_type).to eq :equity
             end
           end
@@ -95,72 +103,72 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
       end
     end
 
-    context 'with a long put' do
+    context "with a long put" do
       let(:side1) { :long }
       let(:strike1) { 150 }
 
-      context 'and leg is opening' do
+      context "and leg is opening" do
         let(:direction1) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :buy_to_open' do
+        describe "#action" do
+          it "returns :buy_to_open" do
             expect(container.action).to eq :buy_to_open
           end
         end
 
-        describe '#order_type' do
-          context 'when it is an option leg' do
-            it 'returns :equity_option' do
+        describe "#order_type" do
+          context "when it is an option leg" do
+            it "returns :equity_option" do
               expect(container.order_type).to eq :equity_option
             end
           end
 
-          context 'when it is an equity leg' do
+          context "when it is an equity leg" do
             let(:leg1) do
               make_equity_leg(side: side1, direction: direction1, underlying_last: underlying_last)
             end
 
-            it 'returns :equity' do
+            it "returns :equity" do
               expect(container.order_type).to eq :equity
             end
           end
         end
       end
 
-      context 'and leg is closing' do
+      context "and leg is closing" do
         let(:direction1) { :closing }
 
-        describe '#opening' do
-          it 'returns false' do
+        describe "#opening" do
+          it "returns false" do
             expect(container.opening?).to eq false
           end
         end
 
-        describe '#action' do
-          it 'returns :buy_to_close' do
+        describe "#action" do
+          it "returns :buy_to_close" do
             expect(container.action).to eq :buy_to_close
           end
         end
 
-        describe '#order_type' do
-          context 'when it is an option leg' do
-            it 'returns :equity_option' do
+        describe "#order_type" do
+          context "when it is an option leg" do
+            it "returns :equity_option" do
               expect(container.order_type).to eq :equity_option
             end
           end
 
-          context 'when it is an equity leg' do
+          context "when it is an equity leg" do
             let(:leg1) do
               make_equity_leg(side: side1, direction: direction1, underlying_last: underlying_last)
             end
 
-            it 'returns :equity' do
+            it "returns :equity" do
               expect(container.order_type).to eq :equity
             end
           end
@@ -169,14 +177,14 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
     end
   end
 
-  context 'where it is a 2-leg put position container' do
+  context "where it is a 2-leg put position container" do
     let(:leg1) do
       make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
-                      underlying_last: underlying_last, expiration_date: expiration1)
+        underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:leg2) do
       make_option_leg(callput: callput, side: side2, direction: direction2, strike: strike2, last: last2,
-                      underlying_last: underlying_last, expiration_date: expiration2)
+        underlying_last: underlying_last, expiration_date: expiration2)
     end
     let(:legs) { [leg1, leg2] }
     let(:callput) { :put }
@@ -187,49 +195,49 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
     let(:expiration1) { nil }
     let(:expiration2) { nil }
 
-    context 'with a short vertical put spread' do
+    context "with a short vertical put spread" do
       let(:side1) { :short }
       let(:side2) { :long }
       let(:strike1) { 150 }
       let(:strike2) { 140 }
 
-      context 'and legs are opening' do
+      context "and legs are opening" do
         let(:direction1) { :opening }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_open' do
+        describe "#action" do
+          it "returns :sell_to_open" do
             expect(container.action).to eq :sell_to_open
           end
         end
 
-        describe '#order_type' do
-          context 'when it is an option leg' do
-            it 'returns :vertical' do
+        describe "#order_type" do
+          context "when it is an option leg" do
+            it "returns :vertical" do
               expect(container.order_type).to eq :vertical
             end
           end
 
-          context 'when it is an equity leg' do
+          context "when it is an equity leg" do
             let(:leg1) do
               make_equity_leg(side: side1, direction: direction1, underlying_last: underlying_last)
             end
 
-            context 'and option leg is long' do
-              it 'raises UnknownComboStructure' do
+            context "and option leg is long" do
+              it "raises UnknownComboStructure" do
                 expect { container.order_type }.to raise_error(TTK::Containers::Legs::Classifier::Combo::UnknownComboStructure)
               end
             end
 
-            context 'and option leg is short' do
+            context "and option leg is short" do
               let(:side2) { :short }
-              it 'returns :covered' do
+              it "returns :covered" do
                 expect(container.order_type).to eq :covered
               end
             end
@@ -237,60 +245,60 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
         end
       end
 
-      context 'and legs are closing' do
+      context "and legs are closing" do
         let(:direction1) { :closing }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns false' do
+        describe "#opening" do
+          it "returns false" do
             expect(container.opening?).to eq false
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_close' do
+        describe "#action" do
+          it "returns :sell_to_close" do
             expect(container.action).to eq :sell_to_close
           end
         end
       end
 
-      context 'and legs are mixed opening / closing' do
+      context "and legs are mixed opening / closing" do
         let(:direction1) { :opening }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll' do
+        describe "#action" do
+          it "returns :roll" do
             expect(container.action).to eq :roll
           end
         end
 
-        describe '#order_type' do
-          context 'when it is an option leg' do
-            it 'returns :vertical_roll' do
+        describe "#order_type" do
+          context "when it is an option leg" do
+            it "returns :vertical_roll" do
               expect(container.order_type).to eq :vertical_roll
             end
           end
 
-          context 'when it is an equity leg' do
+          context "when it is an equity leg" do
             let(:leg1) do
               make_equity_leg(side: side1, direction: direction1, underlying_last: underlying_last)
             end
 
-            context 'and option leg is long' do
-              it 'raises UnknownComboStructure' do
+            context "and option leg is long" do
+              it "raises UnknownComboStructure" do
                 expect { container.order_type }.to raise_error(TTK::Containers::Legs::Classifier::Combo::UnknownComboStructure)
               end
             end
 
-            context 'and option leg is short' do
+            context "and option leg is short" do
               let(:side2) { :short }
-              it 'returns :covered' do
+              it "returns :covered" do
                 expect(container.order_type).to eq :covered
               end
             end
@@ -299,83 +307,83 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
       end
     end
 
-    context 'with a long vertical put spread' do
+    context "with a long vertical put spread" do
       let(:side1) { :long }
       let(:side2) { :short }
       let(:strike1) { 150 }
       let(:strike2) { 140 }
 
-      context 'and legs are opening' do
+      context "and legs are opening" do
         let(:direction1) { :opening }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :buy_to_open' do
+        describe "#action" do
+          it "returns :buy_to_open" do
             expect(container.action).to eq :buy_to_open
           end
         end
 
-        describe '#order_type' do
-          it 'returns :vertical' do
+        describe "#order_type" do
+          it "returns :vertical" do
             expect(container.order_type).to eq :vertical
           end
         end
       end
 
-      context 'and legs are closing' do
+      context "and legs are closing" do
         let(:direction1) { :closing }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns false' do
+        describe "#opening" do
+          it "returns false" do
             expect(container.opening?).to eq false
           end
         end
 
-        describe '#action' do
-          it 'returns :buy_to_close' do
+        describe "#action" do
+          it "returns :buy_to_close" do
             expect(container.action).to eq :buy_to_close
           end
         end
 
-        describe '#order_type' do
-          it 'returns :vertical' do
+        describe "#order_type" do
+          it "returns :vertical" do
             expect(container.order_type).to eq :vertical
           end
         end
       end
 
-      context 'and legs are mixed opening / closing' do
+      context "and legs are mixed opening / closing" do
         let(:direction1) { :opening }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll' do
+        describe "#action" do
+          it "returns :roll" do
             expect(container.action).to eq :roll
           end
         end
 
-        describe '#order_type' do
-          it 'returns :vertical_roll' do
+        describe "#order_type" do
+          it "returns :vertical_roll" do
             expect(container.order_type).to eq :vertical_roll
           end
         end
       end
     end
 
-    context 'with a calendar put spread' do
+    context "with a calendar put spread" do
       let(:side1) { :short }
       let(:side2) { :long }
       let(:strike1) { 150 }
@@ -385,100 +393,100 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
       let(:expiration1) { make_expiration(year: date1.year, month: date1.month, day: date1.day) }
       let(:expiration2) { make_expiration(year: date2.year, month: date2.month, day: date2.day) }
 
-      context 'and legs are opening' do
+      context "and legs are opening" do
         let(:direction1) { :opening }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_open' do
+        describe "#action" do
+          it "returns :sell_to_open" do
             expect(container.action).to eq :sell_to_open
           end
         end
 
-        describe '#order_type' do
-          it 'returns :calendar' do
+        describe "#order_type" do
+          it "returns :calendar" do
             expect(container.order_type).to eq :calendar
           end
         end
       end
 
-      context 'and legs are closing' do
+      context "and legs are closing" do
         let(:direction1) { :closing }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns false' do
+        describe "#opening" do
+          it "returns false" do
             expect(container.opening?).to eq false
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_close' do
+        describe "#action" do
+          it "returns :sell_to_close" do
             expect(container.action).to eq :sell_to_close
           end
         end
 
-        describe '#order_type' do
-          it 'returns :calendar' do
+        describe "#order_type" do
+          it "returns :calendar" do
             expect(container.order_type).to eq :calendar
           end
         end
       end
 
-      context 'and legs are mixed opening / closing' do
+      context "and legs are mixed opening / closing" do
         let(:direction1) { :opening }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll_in' do
+        describe "#action" do
+          it "returns :roll_in" do
             expect(container.action).to eq :roll_in
           end
         end
 
-        describe '#order_type' do
-          it 'returns :calendar_roll' do
+        describe "#order_type" do
+          it "returns :calendar_roll" do
             expect(container.order_type).to eq :calendar_roll
           end
         end
       end
 
-      context 'and legs are mixed closing / opening' do
+      context "and legs are mixed closing / opening" do
         let(:direction1) { :closing }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll_out' do
+        describe "#action" do
+          it "returns :roll_out" do
             expect(container.action).to eq :roll_out
           end
         end
 
-        describe '#order_type' do
-          it 'returns :calendar_roll' do
+        describe "#order_type" do
+          it "returns :calendar_roll" do
             expect(container.order_type).to eq :calendar_roll
           end
         end
       end
     end
 
-    context 'with a reverse calendar put spread' do
+    context "with a reverse calendar put spread" do
       let(:side1) { :long }
       let(:side2) { :short }
       let(:strike1) { 150 }
@@ -488,100 +496,100 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
       let(:expiration1) { make_expiration(year: date1.year, month: date1.month, day: date1.day) }
       let(:expiration2) { make_expiration(year: date2.year, month: date2.month, day: date2.day) }
 
-      context 'and legs are opening' do
+      context "and legs are opening" do
         let(:direction1) { :opening }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :buy_to_open' do
+        describe "#action" do
+          it "returns :buy_to_open" do
             expect(container.action).to eq :buy_to_open
           end
         end
 
-        describe '#order_type' do
-          it 'returns :calendar' do
+        describe "#order_type" do
+          it "returns :calendar" do
             expect(container.order_type).to eq :calendar
           end
         end
       end
 
-      context 'and legs are closing' do
+      context "and legs are closing" do
         let(:direction1) { :closing }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns false' do
+        describe "#opening" do
+          it "returns false" do
             expect(container.opening?).to eq false
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_close' do
+        describe "#action" do
+          it "returns :sell_to_close" do
             expect(container.action).to eq :buy_to_close
           end
         end
 
-        describe '#order_type' do
-          it 'returns :calendar' do
+        describe "#order_type" do
+          it "returns :calendar" do
             expect(container.order_type).to eq :calendar
           end
         end
       end
 
-      context 'and legs are mixed opening / closing' do
+      context "and legs are mixed opening / closing" do
         let(:direction1) { :opening }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll_in' do
+        describe "#action" do
+          it "returns :roll_in" do
             expect(container.action).to eq :roll_in
           end
         end
 
-        describe '#order_type' do
-          it 'returns :calendar_roll' do
+        describe "#order_type" do
+          it "returns :calendar_roll" do
             expect(container.order_type).to eq :calendar_roll
           end
         end
       end
 
-      context 'and legs are mixed closing / opening' do
+      context "and legs are mixed closing / opening" do
         let(:direction1) { :closing }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll_out' do
+        describe "#action" do
+          it "returns :roll_out" do
             expect(container.action).to eq :roll_out
           end
         end
 
-        describe '#order_type' do
-          it 'returns :calendar_roll' do
+        describe "#order_type" do
+          it "returns :calendar_roll" do
             expect(container.order_type).to eq :calendar_roll
           end
         end
       end
     end
 
-    context 'with a diagonal put spread' do
+    context "with a diagonal put spread" do
       let(:side1) { :short }
       let(:side2) { :long }
       let(:strike1) { 150 }
@@ -591,100 +599,100 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
       let(:expiration1) { make_expiration(year: date1.year, month: date1.month, day: date1.day) }
       let(:expiration2) { make_expiration(year: date2.year, month: date2.month, day: date2.day) }
 
-      context 'and legs are opening' do
+      context "and legs are opening" do
         let(:direction1) { :opening }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_open' do
+        describe "#action" do
+          it "returns :sell_to_open" do
             expect(container.action).to eq :sell_to_open
           end
         end
 
-        describe '#order_type' do
-          it 'returns :diagonal' do
+        describe "#order_type" do
+          it "returns :diagonal" do
             expect(container.order_type).to eq :diagonal
           end
         end
       end
 
-      context 'and legs are closing' do
+      context "and legs are closing" do
         let(:direction1) { :closing }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns false' do
+        describe "#opening" do
+          it "returns false" do
             expect(container.opening?).to eq false
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_close' do
+        describe "#action" do
+          it "returns :sell_to_close" do
             expect(container.action).to eq :sell_to_close
           end
         end
 
-        describe '#order_type' do
-          it 'returns :diagonal' do
+        describe "#order_type" do
+          it "returns :diagonal" do
             expect(container.order_type).to eq :diagonal
           end
         end
       end
 
-      context 'and legs are mixed opening / closing' do
+      context "and legs are mixed opening / closing" do
         let(:direction1) { :opening }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll_in' do
+        describe "#action" do
+          it "returns :roll_in" do
             expect(container.action).to eq :roll_in
           end
         end
 
-        describe '#order_type' do
-          it 'returns :diagonal_roll' do
+        describe "#order_type" do
+          it "returns :diagonal_roll" do
             expect(container.order_type).to eq :diagonal_roll
           end
         end
       end
 
-      context 'and legs are mixed closing / opening' do
+      context "and legs are mixed closing / opening" do
         let(:direction1) { :closing }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll_out' do
+        describe "#action" do
+          it "returns :roll_out" do
             expect(container.action).to eq :roll_out
           end
         end
 
-        describe '#order_type' do
-          it 'returns :diagonal_roll' do
+        describe "#order_type" do
+          it "returns :diagonal_roll" do
             expect(container.order_type).to eq :diagonal_roll
           end
         end
       end
     end
 
-    context 'with a reverse diagonal put spread' do
+    context "with a reverse diagonal put spread" do
       let(:side1) { :long }
       let(:side2) { :short }
       let(:strike1) { 150 }
@@ -694,93 +702,93 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
       let(:expiration1) { make_expiration(year: date1.year, month: date1.month, day: date1.day) }
       let(:expiration2) { make_expiration(year: date2.year, month: date2.month, day: date2.day) }
 
-      context 'and legs are opening' do
+      context "and legs are opening" do
         let(:direction1) { :opening }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :buy_to_open' do
+        describe "#action" do
+          it "returns :buy_to_open" do
             expect(container.action).to eq :buy_to_open
           end
         end
 
-        describe '#order_type' do
-          it 'returns :diagonal' do
+        describe "#order_type" do
+          it "returns :diagonal" do
             expect(container.order_type).to eq :diagonal
           end
         end
       end
 
-      context 'and legs are closing' do
+      context "and legs are closing" do
         let(:direction1) { :closing }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns false' do
+        describe "#opening" do
+          it "returns false" do
             expect(container.opening?).to eq false
           end
         end
 
-        describe '#action' do
-          it 'returns :sell_to_close' do
+        describe "#action" do
+          it "returns :sell_to_close" do
             expect(container.action).to eq :buy_to_close
           end
         end
 
-        describe '#order_type' do
-          it 'returns :diagonal' do
+        describe "#order_type" do
+          it "returns :diagonal" do
             expect(container.order_type).to eq :diagonal
           end
         end
       end
 
-      context 'and legs are mixed opening / closing' do
+      context "and legs are mixed opening / closing" do
         let(:direction1) { :opening }
         let(:direction2) { :closing }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll_in' do
+        describe "#action" do
+          it "returns :roll_in" do
             expect(container.action).to eq :roll_in
           end
         end
 
-        describe '#order_type' do
-          it 'returns :diagonal_roll' do
+        describe "#order_type" do
+          it "returns :diagonal_roll" do
             expect(container.order_type).to eq :diagonal_roll
           end
         end
       end
 
-      context 'and legs are mixed closing / opening' do
+      context "and legs are mixed closing / opening" do
         let(:direction1) { :closing }
         let(:direction2) { :opening }
 
-        describe '#opening' do
-          it 'returns true' do
+        describe "#opening" do
+          it "returns true" do
             expect(container.opening?).to eq true
           end
         end
 
-        describe '#action' do
-          it 'returns :roll_out' do
+        describe "#action" do
+          it "returns :roll_out" do
             expect(container.action).to eq :roll_out
           end
         end
 
-        describe '#order_type' do
-          it 'returns :diagonal_roll' do
+        describe "#order_type" do
+          it "returns :diagonal_roll" do
             expect(container.order_type).to eq :diagonal_roll
           end
         end
@@ -809,14 +817,14 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
   let(:stop_price) { 0.0 }
   let(:order_term) { :day }
 
-  context 'where it is an order container' do
+  context "where it is an order container" do
     let(:leg1) do
       make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
-                      underlying_last: underlying_last, expiration_date: expiration1)
+        underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:leg2) do
       make_option_leg(callput: callput, side: side2, direction: direction1, strike: strike2, last: last1,
-                      underlying_last: underlying_last, expiration_date: expiration1)
+        underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:legs) { [leg1, leg2] }
     let(:side1) { :long }
@@ -830,108 +838,27 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
     let(:status) { :open }
     let(:expiration1) { nil }
 
-    describe '#market_session' do
-      context 'when regular session' do
-        it 'returns :regular' do
-          expect(container.market_session).to eq :regular
-        end
-      end
-
-      context 'when extended session' do
-        let(:market_session) { :extended }
-
-        it 'returns :extended' do
-          expect(container.market_session).to eq :extended
-        end
-      end
-    end
-
-    describe '#all_or_none' do
-      context 'when enabled' do
-        let(:all_or_none) { true }
-        it 'returns true' do
-          expect(container.all_or_none).to be true
-        end
-      end
-
-      context 'when disabled' do
-        let(:all_or_none) { false }
-        it 'returns false' do
-          expect(container.all_or_none).to be false
-        end
-      end
-    end
-
-    describe '#price_type' do
-      context 'when a net credit' do
-        let(:price_type) { :credit }
-        it 'returns :credit' do
-          expect(container.price_type).to eq :credit
-        end
-      end
-
-      context 'when a net debit' do
-        let(:price_type) { :debit }
-        it 'returns :debit' do
-          expect(container.price_type).to eq :debit
-        end
-      end
-
-      context 'when net even' do
-        let(:price_type) { :even }
-        it 'returns :even' do
-          expect(container.price_type).to eq :even
-        end
-      end
-    end
-
-    describe '#limit_price' do
-      it 'returns the price' do
-        expect(container.limit_price).to eq limit_price
-      end
-    end
-
-    describe '#stop_price' do
-      it 'returns the price' do
-        expect(container.stop_price).to eq stop_price
-      end
-    end
-
-    describe '#order_term' do
-      context 'when it is a GOOD FOR DAY order' do
-        let(:order_term) { :day }
-        it 'returns :day' do
-          expect(container.order_term).to eq :day
-        end
-      end
-
-      context 'when it is a GOOD UNTIL CANCEL order' do
-        let(:order_term) { :gtc }
-        it 'returns :gtc' do
-          expect(container.order_term).to eq :gtc
-        end
-      end
-    end
+    include_examples "legs interface - basic behavior"
   end
 
   # this is unique to orders... we do not have 4-leg position containers because we do
   # not mix puts and calls (yet?)
-  context 'where it is a 4-leg order container' do
+  context "where it is a 4-leg order container" do
     let(:leg1) do
       make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
-                      underlying_last: underlying_last, expiration_date: expiration1)
+        underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:leg2) do
       make_option_leg(callput: callput, side: side2, direction: direction2, strike: strike2, last: last2,
-                      underlying_last: underlying_last, expiration_date: expiration2)
+        underlying_last: underlying_last, expiration_date: expiration2)
     end
     let(:leg3) do
       make_option_leg(callput: callput, side: side3, direction: direction3, strike: strike3, last: last1,
-                      underlying_last: underlying_last, expiration_date: expiration3)
+        underlying_last: underlying_last, expiration_date: expiration3)
     end
     let(:leg4) do
       make_option_leg(callput: callput, side: side4, direction: direction4, strike: strike4, last: last2,
-                      underlying_last: underlying_last, expiration_date: expiration4)
+        underlying_last: underlying_last, expiration_date: expiration4)
     end
     let(:legs) { [leg1, leg2, leg3, leg4] }
     let(:callput) { :put }
@@ -944,7 +871,7 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
     let(:expiration3) { make_expiration(year: 2022, month: 1, day: 21) }
     let(:expiration4) { make_expiration(year: 2022, month: 1, day: 21) }
 
-    context 'where near spread is long and closing' do
+    context "where near spread is long and closing" do
       let(:side1) { :long }
       let(:side2) { :short }
       let(:strike1) { 150 }
@@ -952,7 +879,7 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
       let(:direction1) { :closing }
       let(:direction2) { :closing }
 
-      context 'and far spread is short and opening' do
+      context "and far spread is short and opening" do
         let(:side3) { :short }
         let(:side4) { :long }
         let(:strike3) { strike1 }
@@ -960,12 +887,11 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
         let(:direction3) { :opening }
         let(:direction4) { :opening }
 
-        include_examples 'legs interface - 4-leg order roll out'
+        include_examples "legs interface - 4-leg order roll out"
       end
-
     end
 
-    context 'where near spread is short and opening' do
+    context "where near spread is short and opening" do
       let(:side1) { :short }
       let(:side2) { :long }
       let(:strike1) { 150 }
@@ -973,7 +899,7 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
       let(:direction1) { :opening }
       let(:direction2) { :opening }
 
-      context 'and far spread is long and closing' do
+      context "and far spread is long and closing" do
         let(:side3) { :long }
         let(:side4) { :short }
         let(:strike3) { strike1 }
@@ -981,9 +907,8 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
         let(:direction3) { :closing }
         let(:direction4) { :closing }
 
-        include_examples 'legs interface - 4-leg order roll in'
+        include_examples "legs interface - 4-leg order roll in"
       end
     end
-
   end
 end

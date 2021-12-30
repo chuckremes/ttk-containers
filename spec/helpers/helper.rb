@@ -214,7 +214,9 @@ module Helper
       end
 
       def gamma
-        1 - vega
+        # we don't want the calc to go negative here because then
+        # tests will break that expect a neg/pos result, so we bound it
+        1 - [vega, 0.99].min
       end
 
       def rho

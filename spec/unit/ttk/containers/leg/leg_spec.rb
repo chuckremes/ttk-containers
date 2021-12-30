@@ -1,9 +1,15 @@
 require "ttk/containers/rspec/shared_leg_spec"
 
 RSpec.describe TTK::Containers::Leg::Example do
-
   let(:quote) { make_default_equity_option_quote(callput: :put) }
+  # derived values to support the product shared specs
   let(:product) { quote.product }
+  let(:strike) { quote.product.strike }
+  let(:year) { quote.product.expiration_date.year }
+  let(:month) { quote.product.expiration_date.month }
+  let(:day) { quote.product.expiration_date.day }
+  # ####
+
   let(:leg_id) { 123 }
   let(:leg_status) { :open }
   let(:fees) { 1.23 }
@@ -36,8 +42,7 @@ RSpec.describe TTK::Containers::Leg::Example do
                         placed_time: placed_time,
                         execution_time: execution_time,
                         preview_time: preview_time,
-                        direction: direction
-    )
+                        direction: direction)
   end
 
   describe "creation" do
@@ -45,10 +50,10 @@ RSpec.describe TTK::Containers::Leg::Example do
       expect(container).to be_instance_of(described_class)
     end
 
-    include_examples "leg interface - required methods", TTK::Containers::Leg
+    include_examples "leg interface with required methods", TTK::Containers::Leg
   end
 
-  context 'position leg' do
+  context "position leg" do
     let(:execution_price) { 5.21 }
     let(:order_price) { 0.0 }
     let(:stop_price) { 0.0 }
@@ -58,50 +63,51 @@ RSpec.describe TTK::Containers::Leg::Example do
     let(:preview_time) { TTK::Containers::Leg::EPOCH }
     let(:direction) { :opening }
 
-    context 'where it is short call then' do
+    context "with a call position" do
       let(:quote) { make_default_equity_option_quote(callput: :call) }
-      let(:side) { :short }
       let(:unfilled_quantity) { 0 }
-      let(:filled_quantity) { -2 }
 
-      include_examples 'leg interface - short position'
-      include_examples 'leg interface - short call greeks'
+      context "and where it is short then" do
+        let(:side) { :short }
+        let(:filled_quantity) { -2 }
+
+        include_examples "leg interface - short position"
+        include_examples "leg interface - short call greeks"
+      end
+
+      context "and where it is long then" do
+        let(:side) { :long }
+        let(:filled_quantity) { 1 }
+
+        include_examples "leg interface - long position"
+        include_examples "leg interface - long call greeks"
+      end
     end
 
-    context 'where it is short put then' do
+    context "with a short put then" do
       let(:quote) { make_default_equity_option_quote(callput: :put) }
       let(:side) { :short }
       let(:unfilled_quantity) { 0 }
       let(:filled_quantity) { -2 }
 
-      include_examples 'leg interface - short position'
-      include_examples 'leg interface - short put greeks'
+      include_examples "leg interface - short position"
+      include_examples "leg interface - short put greeks"
     end
 
-    context 'where it is long call then' do
-      let(:quote) { make_default_equity_option_quote(callput: :call) }
-      let(:side) { :long }
-      let(:unfilled_quantity) { 0 }
-      let(:filled_quantity) { 1 }
-
-      include_examples 'leg interface - long position'
-      include_examples 'leg interface - long call greeks'
-    end
-
-    context 'where it is long put then' do
+    context "with a long put then" do
       let(:quote) { make_default_equity_option_quote(callput: :put) }
       let(:side) { :long }
       let(:unfilled_quantity) { 0 }
       let(:filled_quantity) { 1 }
 
-      include_examples 'leg interface - long position'
-      include_examples 'leg interface - long put greeks'
+      include_examples "leg interface - long position"
+      include_examples "leg interface - long put greeks"
     end
 
-    include_examples 'leg interface - basic behavior'
+    include_examples "leg interface - basic behavior"
   end
 
-  context 'order leg' do
+  context "order leg" do
     let(:execution_price) { 5.21 }
     let(:order_price) { 0.0 }
     let(:stop_price) { 0.0 }
@@ -111,46 +117,46 @@ RSpec.describe TTK::Containers::Leg::Example do
     let(:preview_time) { TTK::Containers::Leg::EPOCH }
     let(:direction) { :closing }
 
-    context 'where it is short call then' do
+    context "with a short call then" do
       let(:quote) { make_default_equity_option_quote(callput: :call) }
       let(:side) { :short }
       let(:unfilled_quantity) { 2 }
       let(:filled_quantity) { 0 }
 
-      include_examples 'leg interface - short order'
-      include_examples 'leg interface - short call greeks'
+      include_examples "leg interface - short order"
+      include_examples "leg interface - short call greeks"
     end
 
-    context 'where it is short put then' do
+    context "with a short put then" do
       let(:quote) { make_default_equity_option_quote(callput: :put) }
       let(:side) { :short }
       let(:unfilled_quantity) { 2 }
       let(:filled_quantity) { 0 }
 
-      include_examples 'leg interface - short order'
-      include_examples 'leg interface - short put greeks'
+      include_examples "leg interface - short order"
+      include_examples "leg interface - short put greeks"
     end
 
-    context 'where it is long call then' do
+    context "with a long call then" do
       let(:quote) { make_default_equity_option_quote(callput: :call) }
       let(:side) { :long }
       let(:unfilled_quantity) { 1 }
       let(:filled_quantity) { 0 }
 
-      include_examples 'leg interface - long order'
-      include_examples 'leg interface - long call greeks'
+      include_examples "leg interface - long order"
+      include_examples "leg interface - long call greeks"
     end
 
-    context 'where it is long put then' do
+    context "with a long put then" do
       let(:quote) { make_default_equity_option_quote(callput: :put) }
       let(:side) { :long }
       let(:unfilled_quantity) { 1 }
       let(:filled_quantity) { 0 }
 
-      include_examples 'leg interface - long order'
-      include_examples 'leg interface - long put greeks'
+      include_examples "leg interface - long order"
+      include_examples "leg interface - long put greeks"
     end
 
-    include_examples 'leg interface - basic behavior'
+    include_examples "leg interface - basic behavior"
   end
 end
