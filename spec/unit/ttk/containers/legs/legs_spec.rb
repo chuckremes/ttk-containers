@@ -21,7 +21,7 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
   context "where it is a 1-leg put position container" do
     let(:leg1) do
       make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
-        underlying_last: underlying_last, expiration_date: expiration1)
+                      underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:legs) { [leg1] }
     let(:callput) { :put }
@@ -50,10 +50,8 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
         end
 
         describe "#order_type" do
-          context "when it is an option leg" do
-            it "returns :equity_option" do
-              expect(container.order_type).to eq :equity_option
-            end
+          it "returns :equity_option" do
+            expect(container.order_type).to eq :equity_option
           end
 
           context "when it is an equity leg" do
@@ -180,11 +178,11 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
   context "where it is a 2-leg put position container" do
     let(:leg1) do
       make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
-        underlying_last: underlying_last, expiration_date: expiration1)
+                      underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:leg2) do
       make_option_leg(callput: callput, side: side2, direction: direction2, strike: strike2, last: last2,
-        underlying_last: underlying_last, expiration_date: expiration2)
+                      underlying_last: underlying_last, expiration_date: expiration2)
     end
     let(:legs) { [leg1, leg2] }
     let(:callput) { :put }
@@ -820,11 +818,11 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
   context "where it is an order container" do
     let(:leg1) do
       make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
-        underlying_last: underlying_last, expiration_date: expiration1)
+                      underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:leg2) do
       make_option_leg(callput: callput, side: side2, direction: direction1, strike: strike2, last: last1,
-        underlying_last: underlying_last, expiration_date: expiration1)
+                      underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:legs) { [leg1, leg2] }
     let(:side1) { :long }
@@ -846,19 +844,19 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
   context "where it is a 4-leg order container" do
     let(:leg1) do
       make_option_leg(callput: callput, side: side1, direction: direction1, strike: strike1, last: last1,
-        underlying_last: underlying_last, expiration_date: expiration1)
+                      underlying_last: underlying_last, expiration_date: expiration1)
     end
     let(:leg2) do
       make_option_leg(callput: callput, side: side2, direction: direction2, strike: strike2, last: last2,
-        underlying_last: underlying_last, expiration_date: expiration2)
+                      underlying_last: underlying_last, expiration_date: expiration2)
     end
     let(:leg3) do
       make_option_leg(callput: callput, side: side3, direction: direction3, strike: strike3, last: last1,
-        underlying_last: underlying_last, expiration_date: expiration3)
+                      underlying_last: underlying_last, expiration_date: expiration3)
     end
     let(:leg4) do
       make_option_leg(callput: callput, side: side4, direction: direction4, strike: strike4, last: last2,
-        underlying_last: underlying_last, expiration_date: expiration4)
+                      underlying_last: underlying_last, expiration_date: expiration4)
     end
     let(:legs) { [leg1, leg2, leg3, leg4] }
     let(:callput) { :put }
