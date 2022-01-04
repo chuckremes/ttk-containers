@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "forwardable"
+
 module TTK
   module Containers
     module Quote
@@ -14,18 +16,18 @@ module TTK
         end
 
         def nice_print_header
-          separator = '|'
+          separator = "|"
 
           [
             separator,
-            ['QuoteTS'.rjust(21).ljust(22) + separator +
-              'Bid'.rjust(6).ljust(7) + separator +
-              'Ask'.rjust(6).ljust(7) + separator +
-              'Last'.rjust(6).ljust(7) + separator +
-              'delta'.rjust(6).ljust(7) + separator +
-              'gamma'.rjust(6).ljust(7) + separator +
-              'theta'.rjust(6).ljust(7) + separator +
-              'iv'.rjust(6).ljust(7)].join(separator)
+            ["QuoteTS".rjust(21).ljust(22) + separator +
+              "Bid".rjust(6).ljust(7) + separator +
+              "Ask".rjust(6).ljust(7) + separator +
+              "Last".rjust(6).ljust(7) + separator +
+              "delta".rjust(6).ljust(7) + separator +
+              "gamma".rjust(6).ljust(7) + separator +
+              "theta".rjust(6).ljust(7) + separator +
+              "iv".rjust(6).ljust(7)].join(separator)
           ]
         end
 
@@ -33,7 +35,7 @@ module TTK
           separator, header_string = nice_print_header
           puts header_string
 
-          now = quote_timestamp.strftime('%Y%m%d-%H:%M:%S.%L').rjust(21).ljust(22)
+          now = quote_timestamp.strftime("%Y%m%d-%H:%M:%S.%L").rjust(21).ljust(22)
           bid = self.bid.to_s.rjust(6).ljust(7)
           ask = self.ask.to_s.rjust(6).ljust(7)
           last = self.last.to_s.rjust(6).ljust(7)
@@ -48,8 +50,8 @@ module TTK
       module Interface
         def self.base_methods
           %i[quote_timestamp quote_status ask bid last volume product update_quote
-             dte open_interest intrinsic extrinsic
-             multiplier delta theta gamma vega rho iv]
+            dte open_interest intrinsic extrinsic
+            multiplier delta theta gamma vega rho iv]
         end
 
         def self.required_methods

@@ -27,7 +27,7 @@ module TTK
             next if key.to_s =~ /multiplier/ # not allowed to be updated, ever
 
             if object[key]
-              send("#{key}=", object[key])
+              set(key, object[key])
             end
           end
         end
@@ -85,6 +85,12 @@ module TTK
         def iv
           return 0.0 if equity?
           dig(:iv).to_f
+        end
+
+        def set(key, value)
+          return self if key == :multiplier # read-only key
+          send("#{key}=", value)
+          self
         end
       end
 

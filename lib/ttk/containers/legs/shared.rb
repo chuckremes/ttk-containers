@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require "forwardable"
 
 require_relative 'classifier/action'
 require_relative 'classifier/combo'
