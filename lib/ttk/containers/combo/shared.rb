@@ -7,20 +7,10 @@ module TTK
     # share a common structure so we pull that commonality into here. The Order and
     # Position Combos are defined explicitly elsewhere.
     #
+    # Define all of the Combo types here along with their convenience methods such as
+    # #anchor_strike, #body_strike, and other.
+    #
     module Combo
-      module Interface
-        def self.required_methods
-          []
-        end
-      end
-
-      module Forward
-        extend Forwardable
-        def_delegators :legs, *Interface.required_methods
-      end
-
-      module ComposedMethods
-      end
     end
   end
 end
