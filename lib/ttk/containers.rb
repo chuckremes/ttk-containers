@@ -12,3 +12,6 @@ require_relative "containers/leg/shared"
 require_relative "containers/leg/example"
 require_relative "containers/legs/shared"
 require_relative "containers/legs/example"
+
+require_relative "containers/combo/group"
+require_relative "containers/combo/shared"

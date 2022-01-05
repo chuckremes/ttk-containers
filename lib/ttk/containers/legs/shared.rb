@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require "forwardable"
 
 require_relative 'classifier/action'
 require_relative 'classifier/combo'
@@ -15,7 +14,7 @@ module TTK
 
           def self.required_methods
             m = base_methods +
-                ComposedMethods.public_instance_methods
+              ComposedMethods.public_instance_methods
 
             m.uniq.reject { |m| disallowed_methods.include?(m) }
           end
@@ -30,6 +29,19 @@ module TTK
         # implement the interface as defined in interface.rb. That concrete implementation
         # includes this shared module to round out the details
         module ComposedMethods
+
+          def legs=(object)
+            # sigh, ruby doesn't have a stable sort so we need to rely on this index hack,
+            # see here for details:
+            # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
+            @legs = if object.all?(&:put?)
+              object.sort_by.with_index { |leg, i| [-leg.strike, i] }
+                    .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+            else
+              object.sort_by.with_index { |leg, i| [leg.strike, i] }
+                    .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+            end
+          end
 
           # Very important. We can infer the order_type from the contents of the legs.
           #
@@ -47,7 +59,7 @@ module TTK
             legs.count
           end
 
-          def all?(field:)
+          def all?(field)
             legs.all? { |leg| leg.send(field) }
           end
 
@@ -55,7 +67,7 @@ module TTK
             legs.any? { |leg| leg.send(field) }
           end
 
-          def map(field:)
+          def map(field)
             legs.map { |leg| leg.send(field) }
           end
 
@@ -116,7 +128,7 @@ module TTK
           end
 
           def symbol
-            s = map(field: :symbol).uniq
+            s = map(:symbol).uniq
             raise MultipleSymbolError, s.inspect if s.size > 1
 
             s
@@ -153,7 +165,9 @@ module TTK
           end
 
           def summation(field:)
-            legs.inject(0.0) { |memo, leg| memo + leg.send(field).to_f }
+            # is using #filled_quantity here going to screw up calcs on Order Legs?
+            # use #abs of quantity since the leg itself sets the sign of the greek
+            legs.inject(0.0) { |memo, leg| memo + (leg.filled_quantity.abs * leg.send(field).to_f) }
           end
         end
       end
@@ -166,7 +180,7 @@ module TTK
 
           def self.required_methods
             m = base_methods +
-                ComposedMethods.public_instance_methods
+              ComposedMethods.public_instance_methods
 
             m.uniq.reject { |m| disallowed_methods.include?(m) }
           end
@@ -181,6 +195,10 @@ module TTK
           include Shared::ComposedMethods
           MultipleSymbolError = Class.new(StandardError)
 
+          def status
+            :open
+          end
+
           def rolling?
             # a position is only open, never rolling which requires
             # opening and closing
@@ -188,8 +206,15 @@ module TTK
           end
 
           def price
-            legs.inject(0.0) do |memo, leg|
-              memo + (leg.filled_quantity * leg.price)
+            # Price of a single-leg container should always be positive even if
+            # the leg is a short. We really only want a leg to return a negative
+            # value when it is part of a combo
+            if legs.count == 1
+              legs.first.price
+            else
+              legs.inject(0.0) do |memo, leg|
+                memo + (leg.filled_quantity * leg.price)
+              end
             end
           end
         end
@@ -221,7 +246,7 @@ module TTK
 
           def self.required_methods
             m = base_methods +
-                ComposedMethods.public_instance_methods
+              ComposedMethods.public_instance_methods
 
             m.uniq.reject { |m| disallowed_methods.include?(m) }
           end

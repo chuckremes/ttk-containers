@@ -17,7 +17,12 @@ module TTK
           end
 
           def <=>(other)
-            date <=> other.date
+            if other.respond_to?(:date)
+              date <=> other.date
+            else
+              # assume it's a date object
+              date <=> other
+            end
           end
         end
 

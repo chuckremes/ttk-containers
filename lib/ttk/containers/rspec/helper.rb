@@ -1,3 +1,12 @@
+require_relative "../product/shared"
+require_relative "../product/example"
+require_relative "../quote/shared"
+require_relative "../quote/example"
+require_relative "../leg/shared"
+require_relative "../leg/example"
+require_relative "../legs/shared"
+require_relative "../legs/example"
+
 module Helper
 
   # Takes year, momth, day to set the date. When given a +date+ arg, that is
@@ -72,11 +81,13 @@ module Helper
                       product: (product || make_default_equity_product))
   end
 
-  def make_default_equity_option_quote(callput: :call, strike: 155.5, last: 1.4, underlying_last: 154.18, product: nil, expiration_date: nil)
+  def make_default_equity_option_quote(callput: :call, strike: 155.5, last: 1.4, underlying_last: 154.18,
+                                       product: nil, expiration_date: nil)
     product ||= make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
 
     make_equity_option_quote(quote_timestamp: Time.now,
                              quote_status: :realtime,
+                             strike: strike,
                              last: last,
                              underlying_last: underlying_last,
                              volume: 1234,
@@ -91,7 +102,10 @@ module Helper
                       leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
     product = make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
 
-    quote = make_default_equity_option_quote(callput: callput, last: last, product: product)
+    quote = make_default_equity_option_quote(callput: callput, last: last, product: product, strike: strike)
+
+    # make sure sign of quantity is corrected
+    filled_quantity = side == :short ? -(filled_quantity.abs) : filled_quantity.abs
 
     klass.new(
       product: product,
@@ -121,7 +135,7 @@ module Helper
                       leg_status: :executed, leg_id: 1, fees: 0.0, commission: 0.0)
     product = make_default_equity_option_product(callput: callput, strike: strike, expiration_date: expiration_date)
 
-    quote = make_default_equity_option_quote(callput: callput, last: last, product: product)
+    quote = make_default_equity_option_quote(callput: callput, last: last, product: product, strike: strike)
     # make sure sign of quantity is corrected
     filled_quantity = side == :short ? -(filled_quantity.abs) : filled_quantity.abs
 
@@ -171,6 +185,10 @@ module Helper
     )
   end
 
+  def make_option_position_legs(klass: TTK::Containers::Legs::Position::Example, legs: [])
+    klass.new(legs: legs)
+  end
+
   # option price = dte * delta
   # closer to strike means closer to 50 delta; every 1% above/below changes
   # delta by same (difference / price) * 100 * (1/dte)
@@ -205,7 +223,7 @@ module Helper
       end
 
       def delta
-        value = (difference.abs / price) * 100 * (1 / dte)
+        value = (difference.abs / price) * 100 * (1.0 / dte)
         if value.nan?
           0
         else
@@ -214,7 +232,7 @@ module Helper
       end
 
       def theta
-        -(extrinsic / dte)
+        -(extrinsic / dte.to_f)
       end
 
       def intrinsic
@@ -264,9 +282,9 @@ module Helper
       def delta
         # handle overflows
         if itm?
-          [0.5 + super, 1.0].min
+          [super, 1.0].min
         else
-          [0.5 - super, 0.0].max
+          [super, 0.0].max
         end
       end
     end
@@ -287,9 +305,9 @@ module Helper
       def delta
         # handle overflows
         if itm?
-          [-0.5 - super, -1.0].max
+          [-super, -1.0].max
         else
-          [-0.5 + super, 0.0].min
+          [-super, 0.0].min
         end
       end
     end

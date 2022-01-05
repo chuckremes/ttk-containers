@@ -374,35 +374,35 @@ RSpec.shared_examples "legs interface with short opening vertical" do
 
   describe "#delta" do
     it "matches combined delta of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.delta) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.delta) / l.filled_quantity.abs) }
       expect(container.delta).to eq sum
     end
   end
 
   describe "#gamma" do
     it "matches combined gamma of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.gamma) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.gamma) / l.filled_quantity.abs) }
       expect(container.gamma).to eq sum
     end
   end
 
   describe "#theta" do
     it "matches combined theta of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.theta) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.theta) / l.filled_quantity.abs) }
       expect(container.theta).to eq sum
     end
   end
 
   describe "#vega" do
     it "matches combined vega of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.vega) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.vega) / l.filled_quantity.abs) }
       expect(container.vega).to eq sum
     end
   end
 
   describe "#rho" do
     it "matches combined rho of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.rho) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.rho) / l.filled_quantity.abs) }
       expect(container.rho).to eq sum
     end
   end
@@ -441,35 +441,35 @@ RSpec.shared_examples "legs interface with short closing vertical" do
 
   describe "#delta" do
     it "matches combined delta of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.delta) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.delta) / l.filled_quantity.abs) }
       expect(container.delta).to eq sum
     end
   end
 
   describe "#gamma" do
     it "matches combined gamma of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.gamma) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.gamma) / l.filled_quantity.abs) }
       expect(container.gamma).to eq sum
     end
   end
 
   describe "#theta" do
     it "matches combined theta of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.theta) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.theta) / l.filled_quantity.abs) }
       expect(container.theta).to eq sum
     end
   end
 
   describe "#vega" do
     it "matches combined vega of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.vega) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.vega) / l.filled_quantity.abs) }
       expect(container.vega).to eq sum
     end
   end
 
   describe "#rho" do
     it "matches combined rho of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.rho) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.rho) / l.filled_quantity.abs) }
       expect(container.rho).to eq sum
     end
   end
@@ -508,35 +508,35 @@ RSpec.shared_examples "legs interface with long opening vertical" do
 
   describe "#delta" do
     it "matches combined delta of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.delta) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.delta) / l.filled_quantity.abs) }
       expect(container.delta).to eq sum
     end
   end
 
   describe "#gamma" do
     it "matches combined gamma of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.gamma) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.gamma) / l.filled_quantity.abs) }
       expect(container.gamma).to eq sum
     end
   end
 
   describe "#theta" do
     it "matches combined theta of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.theta) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.theta) / l.filled_quantity.abs) }
       expect(container.theta).to eq sum
     end
   end
 
   describe "#vega" do
     it "matches combined vega of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.vega) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.vega) / l.filled_quantity.abs) }
       expect(container.vega).to eq sum
     end
   end
 
   describe "#rho" do
     it "matches combined rho of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.rho) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.rho) / l.filled_quantity.abs) }
       expect(container.rho).to eq sum
     end
   end
@@ -575,35 +575,35 @@ RSpec.shared_examples "legs interface with long closing vertical" do
 
   describe "#delta" do
     it "matches combined delta of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.delta) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.delta) / l.filled_quantity.abs) }
       expect(container.delta).to eq sum
     end
   end
 
   describe "#gamma" do
     it "matches combined gamma of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.gamma) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.gamma) / l.filled_quantity.abs) }
       expect(container.gamma).to eq sum
     end
   end
 
   describe "#theta" do
     it "matches combined theta of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.theta) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.theta) / l.filled_quantity.abs) }
       expect(container.theta).to eq sum
     end
   end
 
   describe "#vega" do
     it "matches combined vega of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.vega) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.vega) / l.filled_quantity.abs) }
       expect(container.vega).to eq sum
     end
   end
 
   describe "#rho" do
     it "matches combined rho of the legs" do
-      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity * l.rho) / l.filled_quantity.abs) }
+      sum = legs.inject(0.0) { |m, l| m + ((l.filled_quantity.abs * l.rho) / l.filled_quantity.abs) }
       expect(container.rho).to eq sum
     end
   end

@@ -73,10 +73,12 @@ RSpec.describe TTK::Containers::Legs::Position::Example do
 
     context "with a short put vertical" do
       let(:leg1) do
-        make_option_leg(callput: callput, side: side1, direction: direction, strike: strike1)
+        make_option_leg(callput: callput, side: side1, direction: direction, strike: strike1,
+                        last: 5.0)
       end
       let(:leg2) do
-        make_option_leg(callput: callput, side: side2, direction: direction, strike: strike2)
+        make_option_leg(callput: callput, side: side2, direction: direction, strike: strike2,
+                        last: 3.0) # set #last so greeks are different
       end
       let(:side1) { :short }
       let(:side2) { :long }
