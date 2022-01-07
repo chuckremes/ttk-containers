@@ -36,13 +36,13 @@ module TTK
           puts header_string
 
           now = quote_timestamp.strftime("%Y%m%d-%H:%M:%S.%L").rjust(21).ljust(22)
-          bid = self.bid.to_s.rjust(6).ljust(7)
-          ask = self.ask.to_s.rjust(6).ljust(7)
-          last = self.last.to_s.rjust(6).ljust(7)
-          delta = self.delta.rjust(6).ljust(7)
-          gamma = self.gamma.rjust(6).ljust(7)
-          theta = self.theta.rjust(6).ljust(7)
-          iv = self.iv.rjust(6).ljust(7)
+          bid = self.bid.round(2).to_s.rjust(6).ljust(7)
+          ask = self.ask.round(2).to_s.rjust(6).ljust(7)
+          last = self.last.round(2).to_s.rjust(6).ljust(7)
+          delta = self.delta.round(3).to_s.rjust(6).ljust(7)
+          gamma = self.gamma.round(3).to_s.rjust(6).ljust(7)
+          theta = self.theta.round(3).to_s.rjust(6).ljust(7)
+          iv = self.iv.round(3).to_s.rjust(6).ljust(7)
           puts [now, bid, ask, last, delta, gamma, theta, iv].join(separator)
         end
       end

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'classifier/action'
-require_relative 'classifier/combo'
+require_relative "classifier/action"
+require_relative "classifier/combo"
+require_relative "classifier//combo_quantity"
 
 module TTK
   module Containers
@@ -9,7 +10,7 @@ module TTK
       module Shared
         module Interface
           def self.base_methods
-            %i[legs status]
+            %i[legs]
           end
 
           def self.required_methods
@@ -29,6 +30,11 @@ module TTK
         # implement the interface as defined in interface.rb. That concrete implementation
         # includes this shared module to round out the details
         module ComposedMethods
+          include Enumerable
+
+          def each
+            legs.each { |leg| yield(leg) }
+          end
 
           def legs=(object)
             # sigh, ruby doesn't have a stable sort so we need to rely on this index hack,
@@ -36,10 +42,10 @@ module TTK
             # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
             @legs = if object.all?(&:put?)
               object.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                    .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
             else
               object.sort_by.with_index { |leg, i| [leg.strike, i] }
-                    .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
             end
           end
 
@@ -142,6 +148,15 @@ module TTK
             summation(:commission)
           end
 
+          def filled_quantity
+            sizes = map(:filled_quantity).map(&:abs).uniq
+            Classifier::ComboQuantity.greatest_common_factor(sizes)
+          end
+
+          def unfilled_quantity
+            sum(&:unfilled_quantity)
+          end
+
           # Greeks!
 
           def delta
@@ -220,19 +235,19 @@ module TTK
         end
 
         module ClassMethods
-          def from_legs(legs:, status:)
+          def from_legs(legs:)
             # sigh, ruby doesn't have a stable sort so we need to rely on this index hack,
             # see here for details:
             # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
             legs = if legs.all?(&:put?)
-                     legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                         .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
-                   else
-                     legs.sort_by.with_index { |leg, i| [leg.strike, i] }
-                         .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
-                   end
+              legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+            else
+              legs.sort_by.with_index { |leg, i| [leg.strike, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+            end
 
-            new(legs: legs, status: status)
+            new(legs: legs)
           end
         end
       end
@@ -241,7 +256,7 @@ module TTK
         module Interface
           def self.base_methods
             Shared::Interface.base_methods +
-              %i[market_session all_or_none price_type limit_price stop_price order_term]
+              %i[status market_session all_or_none price_type limit_price stop_price order_term]
           end
 
           def self.required_methods
@@ -279,12 +294,12 @@ module TTK
             # see here for details:
             # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
             legs = if legs.all?(&:put?)
-                     legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                         .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
-                   else
-                     legs.sort_by.with_index { |leg, i| [leg.strike, i] }
-                         .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
-                   end
+              legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+            else
+              legs.sort_by.with_index { |leg, i| [leg.strike, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+            end
 
             new(legs: legs, status: status)
           end

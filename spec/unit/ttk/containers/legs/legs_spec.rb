@@ -4,13 +4,11 @@ require "ttk/containers/rspec/shared_legs_spec"
 
 RSpec.describe TTK::Containers::Legs::Position::Example do
   subject(:container) do
-    described_class.from_legs(legs: legs, status: status)
+    described_class.from_legs(legs: legs)
   end
-  let(:status) { :open }
 
   describe "creation" do
     let(:legs) { [] }
-    let(:status) { :open }
 
     it "returns the correct class instance" do
       expect(container).to be_kind_of(described_class)
