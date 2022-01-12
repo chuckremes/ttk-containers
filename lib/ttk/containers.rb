@@ -1,6 +1,9 @@
 require "tzinfo"
-Eastern_TZ = TZInfo::Timezone.get("US/Eastern")
-Central_TZ = TZInfo::Timezone.get("US/Central")
+
+module TTK
+  Eastern_TZ ||= TZInfo::Timezone.get("US/Eastern")
+  Central_TZ ||= TZInfo::Timezone.get("US/Central")
+end
 
 require_relative "containers/product/expiration/shared"
 require_relative "containers/product/expiration/example"

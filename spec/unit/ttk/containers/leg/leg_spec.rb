@@ -48,7 +48,7 @@ RSpec.describe TTK::Containers::Leg::Example do
   end
 
   context "position leg" do
-    let(:execution_time) { Time.new(now.year, now.month, now.day, 0, 0, 0, Eastern_TZ) }
+    let(:execution_time) { Time.new(now.year, now.month, now.day, 0, 0, 0, TTK::Eastern_TZ) }
 
     context "with a call position" do
       let(:quote) { make_default_equity_option_quote(callput: :call) }
@@ -112,7 +112,7 @@ RSpec.describe TTK::Containers::Leg::Example do
   end
 
   context "order leg" do
-    let(:execution_time) { Time.new(now.year, now.month, now.day, 0, 0, 0, Eastern_TZ) }
+    let(:execution_time) { Time.new(now.year, now.month, now.day, 0, 0, 0, TTK::Eastern_TZ) }
 
     context "with a short call then" do
       let(:quote) { make_default_equity_option_quote(callput: :call) }
