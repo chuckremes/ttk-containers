@@ -43,7 +43,7 @@ module TTK
           end
 
           def expiration_count(legs)
-            value = legs.map(&:expiration_date).uniq.count
+            value = legs.map { |l| l.expiration_date.date }.uniq.count
             raise TooManyExpirations, "Container has #{value} expirations!" if value > 2
 
             value

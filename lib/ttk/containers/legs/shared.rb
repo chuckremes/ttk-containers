@@ -73,10 +73,6 @@ module TTK
             legs.any? { |leg| leg.send(field) }
           end
 
-          def map(field)
-            legs.map { |leg| leg.send(field) }
-          end
-
           def ==(other)
             # assumes legs are sorted consistently
             legs.count == other.legs.count && legs.zip(other.legs).all? do |l1, l2|
@@ -134,7 +130,7 @@ module TTK
           end
 
           def symbol
-            s = map(:symbol).uniq
+            s = legs.map(&:symbol).uniq
             raise MultipleSymbolError, s.inspect if s.size > 1
 
             s
@@ -149,12 +145,25 @@ module TTK
           end
 
           def filled_quantity
-            sizes = map(:filled_quantity).map(&:abs).uniq
+            sizes = legs.map(&:filled_quantity).map(&:abs).uniq
             Classifier::ComboQuantity.greatest_common_factor(sizes)
           end
 
           def unfilled_quantity
-            sum(&:unfilled_quantity)
+            sizes = legs.map(&:unfilled_quantity).map(&:abs).uniq
+            Classifier::ComboQuantity.greatest_common_factor(sizes)
+          end
+
+          def preview_time
+            legs.map(&:preview_time).min
+          end
+
+          def placed_time
+            legs.map(&:placed_time).min
+          end
+
+          def execution_time
+            legs.map(&:execution_time).min
           end
 
           # Greeks!
@@ -182,7 +191,7 @@ module TTK
           def summation(field:)
             # is using #filled_quantity here going to screw up calcs on Order Legs?
             # use #abs of quantity since the leg itself sets the sign of the greek
-            legs.inject(0.0) { |memo, leg| memo + (leg.filled_quantity.abs * leg.send(field).to_f) }
+            legs.inject(0.0) { |memo, leg| memo + (leg.quantity.abs * leg.send(field).to_f) }
           end
         end
       end
