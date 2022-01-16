@@ -60,6 +60,14 @@ module TTK
           direction == :closing
         end
 
+        def quantity
+          # sometimes we just want "a quantity" and don't care if it's
+          # filled or unfilled; use this method to grab the total
+          # quantity for this leg regardless of its status
+          # always 0 or positive, never negative
+          unfilled_quantity.to_i.abs + filled_quantity.to_i.abs
+        end
+
         # Greeks!
         # Defined here so each leg can adjust itself based on it
         # being a put/call and long/short
