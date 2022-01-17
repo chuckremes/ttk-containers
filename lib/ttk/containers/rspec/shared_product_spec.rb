@@ -17,7 +17,7 @@ RSpec.shared_examples "product interface with required methods" do |parent_modul
 
   # Confirm that the container forwarding to Expiration is setup and active
   include_examples "expiration interface with required methods", TTK::Containers::Product::Expiration do
-    let(:expiration) { container.expiration_date }
+    let(:expiration) { container.expiration }
   end
 
   # Type checking...
@@ -58,15 +58,15 @@ RSpec.shared_examples "product interface with required methods" do |parent_modul
     end
   end
 
-  describe "#expiration_date" do
+  describe "#expiration" do
     it "responds to :year" do
-      expect(container.expiration_date).to respond_to(:year)
+      expect(container.expiration).to respond_to(:year)
     end
     it "responds to :month" do
-      expect(container.expiration_date).to respond_to(:month)
+      expect(container.expiration).to respond_to(:month)
     end
     it "responds to :day" do
-      expect(container.expiration_date).to respond_to(:day)
+      expect(container.expiration).to respond_to(:day)
     end
   end
 
@@ -250,9 +250,9 @@ RSpec.shared_examples "product interface with basic call option behaviors" do
     end
   end
 
-  describe "#expiration_date" do
+  describe "#expiration" do
     include_examples "expiration interface with basic behaviors" do
-      let(:expiration) { container.expiration_date }
+      let(:expiration) { container.expiration }
     end
   end
 
@@ -317,9 +317,9 @@ RSpec.shared_examples "product interface with basic put option behaviors" do
     end
   end
 
-  describe "#expiration_date" do
+  describe "#expiration" do
     include_examples "expiration interface with basic behaviors" do
-      let(:expiration) { container.expiration_date }
+      let(:expiration) { container.expiration }
     end
   end
 
@@ -383,8 +383,8 @@ RSpec.shared_examples "product interface with basic equity instrument behaviors"
     end
   end
 
-  describe "#expiration_date" do
-    let(:expiration) { container.expiration_date }
+  describe "#expiration" do
+    let(:expiration) { container.expiration }
 
     it "returns 1970 as the year" do
       expect(expiration.year).to eq 1970

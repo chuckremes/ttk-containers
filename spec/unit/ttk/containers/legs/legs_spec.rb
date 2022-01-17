@@ -119,7 +119,8 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
       price_type: price_type,
       limit_price: price,
       stop_price: stop_price,
-      order_term: order_term
+      order_term: order_term,
+      order_id: order_id
     )
   end
   let(:status) { :open }
@@ -127,8 +128,10 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
   let(:all_or_none) { false }
   let(:price_type) { :debit }
   let(:price) { 1.23 }
+  let(:limit_price) { price } # duped for Order tests only since #limit_price has no meaning to a Position
   let(:stop_price) { 0.0 }
   let(:order_term) { :day }
+  let(:order_id) { rand(999_999) }
 
   context "where it is a 1-leg container" do
     let(:legs) { [leg] }
@@ -144,12 +147,16 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
         let(:direction) { :opening }
 
         include_examples "legs interface with short opening option"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
 
       context "that is closing" do
         let(:direction) { :closing }
 
         include_examples "legs interface with short closing option"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
     end
 
@@ -164,12 +171,16 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
         let(:direction) { :opening }
 
         include_examples "legs interface with long opening option"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
 
       context "that is closing" do
         let(:direction) { :closing }
 
         include_examples "legs interface with long closing option"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
     end
 
@@ -183,6 +194,8 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
         let(:direction) { :opening }
 
         include_examples "legs interface with short opening stock"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
     end
   end
@@ -208,12 +221,16 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
         let(:direction) { :opening }
 
         include_examples "legs interface with short opening vertical"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
 
       context "that is closing" do
         let(:direction) { :closing }
 
         include_examples "legs interface with short closing vertical"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
     end
 
@@ -232,12 +249,16 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
         let(:direction) { :opening }
 
         include_examples "legs interface with long opening vertical"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
 
       context "that is closing" do
         let(:direction) { :closing }
 
         include_examples "legs interface with long closing vertical"
+        include_examples "legs interface - basic behavior"
+        include_examples "legs interface - order behavior"
       end
     end
   end
@@ -278,6 +299,8 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
       let(:expiration2) { today + 45 }
 
       include_examples "legs interface with vertical roll out"
+      include_examples "legs interface - basic behavior"
+      include_examples "legs interface - order behavior"
     end
 
     context "that is rolling out" do
@@ -306,6 +329,8 @@ RSpec.describe TTK::Containers::Legs::Order::Example do
       let(:expiration2) { today + 45 }
 
       include_examples "legs interface with vertical roll in"
+      include_examples "legs interface - basic behavior"
+      include_examples "legs interface - order behavior"
     end
   end
 

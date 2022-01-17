@@ -24,9 +24,9 @@ module TTK
           0
         end
 
-        alias_method :orig_expiration_date, :expiration_date
-        def expiration_date
-          return orig_expiration_date if equity_option?
+        alias_method :orig_expiration, :expiration
+        def expiration
+          return orig_expiration if equity_option?
 
           Expiration::Example.new(year: 1970, month: 1, day: 1)
         end

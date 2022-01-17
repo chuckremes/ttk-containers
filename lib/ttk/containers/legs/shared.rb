@@ -42,10 +42,10 @@ module TTK
             # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
             @legs = if object.all?(&:put?)
               object.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration.date, i] }
             else
               object.sort_by.with_index { |leg, i| [leg.strike, i] }
-                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration.date, i] }
             end
           end
 
@@ -250,10 +250,10 @@ module TTK
             # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
             legs = if legs.all?(&:put?)
               legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration.date, i] }
             else
               legs.sort_by.with_index { |leg, i| [leg.strike, i] }
-                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration.date, i] }
             end
 
             new(legs: legs)
@@ -265,7 +265,7 @@ module TTK
         module Interface
           def self.base_methods
             Shared::Interface.base_methods +
-              %i[status market_session all_or_none price_type limit_price stop_price order_term]
+              %i[status market_session all_or_none price_type limit_price stop_price order_term order_id]
           end
 
           def self.required_methods
@@ -304,10 +304,10 @@ module TTK
             # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
             legs = if legs.all?(&:put?)
               legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration.date, i] }
             else
               legs.sort_by.with_index { |leg, i| [leg.strike, i] }
-                .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                .sort_by.with_index { |leg, i| [leg.expiration.date, i] }
             end
 
             new(legs: legs, status: status)

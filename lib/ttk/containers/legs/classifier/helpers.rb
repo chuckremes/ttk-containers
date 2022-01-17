@@ -43,7 +43,7 @@ module TTK
           end
 
           def expiration_count(legs)
-            value = legs.map { |l| l.expiration_date.date }.uniq.count
+            value = legs.map { |l| l.expiration.date }.uniq.count
             raise TooManyExpirations, "Container has #{value} expirations!" if value > 2
 
             value
@@ -71,13 +71,13 @@ module TTK
             # https://medium.com/store2be-tech/stable-vs-unstable-sorting-2943b1d13977
             if legs.all? { |l| l.put? }
               legs.sort_by.with_index { |leg, i| [-leg.strike, i] }
-                  .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                  .sort_by.with_index { |leg, i| [leg.expiration.date, i] }
             else
               # note that a mix of calls and puts could be in this array
               # so we just use ascending strike order as the default;
               # besides, it's dumb to invert calls and puts
               legs.sort_by.with_index { |leg, i| [leg.strike, i] }
-                  .sort_by.with_index { |leg, i| [leg.expiration_date.date, i] }
+                  .sort_by.with_index { |leg, i| [leg.expiration.date, i] }
             end
           end
 

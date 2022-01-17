@@ -44,7 +44,7 @@ module TTK
 
         module Forward
           extend Forwardable
-          def_delegators :expiration_date, *Interface.required_methods
+          def_delegators :expiration, *Interface.required_methods
         end
       end
     end

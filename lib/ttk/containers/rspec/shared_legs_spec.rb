@@ -769,3 +769,11 @@ RSpec.shared_examples "legs interface - basic behavior" do
     end
   end
 end
+
+RSpec.shared_examples "legs interface - order behavior" do
+  describe "#order_id" do
+    it "returns the order_id" do
+      expect(container.order_id).to eq order_id
+    end
+  end
+end

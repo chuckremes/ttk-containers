@@ -24,7 +24,7 @@ module Helper
 
   def make_product(klass: TTK::Containers::Product::Example, symbol:, strike:, callput:, security_type:, expiration_date:)
     klass.new(symbol: symbol, strike: strike, callput: callput, security_type: security_type,
-              expiration_date: make_expiration(date: expiration_date))
+              expiration: make_expiration(date: expiration_date))
   end
 
   def make_equity_quote(klass: TTK::Containers::Quote::Example, quote_timestamp:, quote_status:,
@@ -37,7 +37,7 @@ module Helper
                                strike: 150.0, last:, underlying_last:, spread: 0.03, volume:, product:)
 
     greeks = FakeGreeks.from(price: underlying_last, strike: strike, callput: product.callput,
-                             dte: (product.expiration_date.date - Date.today).to_i)
+                             dte: (product.expiration.date - Date.today).to_i)
 
     klass.new(quote_timestamp: quote_timestamp, quote_status: quote_status, ask: last + spread, bid: last - spread,
               last: last, volume: volume, product: product,

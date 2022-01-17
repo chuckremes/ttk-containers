@@ -34,9 +34,9 @@ module TTK
         def osi
           if equity_option?
             symbol.ljust(6, '-') +
-              (expiration_date.year % 2000).to_s.rjust(2, '0') +
-              expiration_date.month.to_s.rjust(2, '0') +
-              expiration_date.day.to_s.rjust(2, '0') +
+              (expiration.year % 2000).to_s.rjust(2, '0') +
+              expiration.month.to_s.rjust(2, '0') +
+              expiration.day.to_s.rjust(2, '0') +
               (call? ? 'C' : 'P') +
               strike.to_i.to_s.rjust(5, '0') + ((strike - strike.to_i) * 1000).to_i.to_s.rjust(3, '0')
           else
@@ -60,7 +60,7 @@ module TTK
       #
       module Interface
         def self.base_methods
-          %i[security_type callput strike symbol expiration_date]
+          %i[security_type callput strike symbol expiration]
         end
 
         def self.required_methods
