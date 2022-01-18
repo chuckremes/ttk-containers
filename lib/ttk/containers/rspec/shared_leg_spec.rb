@@ -363,8 +363,8 @@ RSpec.shared_examples "leg interface - long put greeks" do
   end
 
   describe "#rho" do
-    it "returns a positive number" do
-      expect(container.rho).to be_positive
+    it "returns a negative number" do
+      expect(container.rho).to be_negative
     end
 
     it "returns the quote rho" do
@@ -487,8 +487,8 @@ RSpec.shared_examples "leg interface - short put greeks" do
   end
 
   describe "#rho" do
-    it "returns a negative number" do
-      expect(container.rho).to be_negative
+    it "returns a positive number" do
+      expect(container.rho).to be_positive
     end
 
     it "returns the same absolute value of quote rho" do
